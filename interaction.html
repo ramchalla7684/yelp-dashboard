@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Yelp Business Data Analysis</title>
+  <style>
+    	select, p, input {
+        	font: 1em Calibri;
+        }
+    </style>
+
+</head>
+<body onload="getBusinessCategories()">
+      <!--The SELECT element.-->
+      <h2> Yelp Business Data Analysis </h2>
+      <h3> Select the type of business to analyze </h3>
+      <select id="sel" onchange="fetchBusinesses()">
+          <option value="">-- Select Business Type --</option>
+      </select>
+</body>
+<script type="text/javascript" src="interaction.js"></script>
+
+</html>
