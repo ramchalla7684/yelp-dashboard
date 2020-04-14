@@ -2,6 +2,11 @@
 <html>
 <head>
   <title>Yelp Business Data Analysis</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.min.css">
   <style>
     	select, p, input {
         	font: 1em Calibri;
@@ -13,7 +18,7 @@
       <!--The SELECT element.-->
       <h2> Yelp Business Data Analysis </h2>
       <h3> Select the type of business to analyze </h3>
-      <select id="sel" onchange="fetchBusinesses()">
+      <select class="chosen" id="sel" onchange="fetchBusinesses()">
           <option value="">-- Select Business Type --</option>
       </select>
 </body>
