@@ -1,27 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Yelp Business Data Analysis</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.jquery.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.5/chosen.min.css">
-  <style>
-    	select, p, input {
-        	font: 1em Calibri;
-        }
-    </style>
-
+  <link rel="stylesheet" type="text/css" href="interaction.css">
+  <script type="text/javascript" src="interaction.js"></script>
 </head>
-<body onload="getBusinessCategories()">
-      <!--The SELECT element.-->
-      <h2> Yelp Business Data Analysis </h2>
-      <h3> Select the type of business to analyze </h3>
-      <select class="chosen" id="sel" onchange="fetchBusinesses()">
-          <option value="">-- Select Business Type --</option>
-      </select>
+<body>
+  <center>
+    <h2> Yelp Business Data Analysis </h2>
+    <p> Select the type of business category to analyze </p>
+  </center>
+  <div class="wrapper">
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>Top 10 Business Categories </h3>
+      </div>
+
+      <ul class="list-unstyled components">
+        <p>Dummy Heading</p>
+        <li class="active">
+            <a href="#">Restaurants</a>
+        </li>
+        <li>
+            <a href="#">Golf Clubs</a>
+        </li>
+        <li>
+            <a href="#">Beauty & Spas</a>
+        </li>
+        <li>
+            <a href="#">Shopping</a>
+        </li>
+        <li>
+            <a href="#">Fitness and Instruction</a>
+        </li>
+        <li>
+            <a href="#">Beauty & Spas</a>
+        </li>
+        <li>
+            <a href="#">Yoga</a>
+        </li>
+        <li>
+            <a href="#">Gym</a>
+        </li>
+        <li>
+            <a href="#">Government Agency</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content">
+        <!-- We'll fill this with dummy content -->
+    </div>
+
+</div>
+
 </body>
-<script type="text/javascript" src="interaction.js"></script>
 
 </html>
