@@ -10,6 +10,20 @@
     <link rel="stylesheet" href="./css/main.css">
 
     <title>Dashboard</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <style>
+        #mapid {
+            height: 480px;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -42,14 +56,13 @@
                     </ul>
                 </nav>
 
-                <div class="map">
-                    <iframe
+                <div class="map" id="mapid">
+                    <!-- <iframe
                         src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d13321.214265514376!2d-111.94032539999999!3d33.4153292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1587170500310!5m2!1sen!2sus"
                         width="600" height="450" frameborder="0" style="border:0;" allowfullscreen=""
-                        aria-hidden="false" tabindex="0"></iframe>
+                        aria-hidden="false" tabindex="0"></iframe> -->
                 </div>
             </section>
-
 
             <section class="date-picker">
                 <div class="quarters">
@@ -65,6 +78,9 @@
             <section class="viz">
             </section>
         </main>
+    </div>
+
+    <script src="./js/leaflet.js"></script>
 </body>
 
 </html>
