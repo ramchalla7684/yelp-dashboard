@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="bubble.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+  <title>Yelp Business Analytics</title>
+</head>
+<body>
+
+  <h1>Sentiment Bubble Chart</h1>
+
+  <div id="controls">
+    <span>
+      <label><input id="combine" type="radio" name="grouping" value="combine" checked>Combine</label>
+      <label><input id="sentiments" type="radio" name="grouping" value="sentiments">Sentiments</label>
+      <!-- <label><input id="word-centers" type="radio" name="grouping" value="word-centers">Word Centers</label> -->
+      <label><input id="frequency" type="radio" name="grouping" value="frequency">Frequency</label>
+    </span>
+  </div>
+  <div id="word-info"></div>
+  <div id="bubble-chart"></div>
+
+  <script src="bubble.js"></script>
+</body>
+</html>

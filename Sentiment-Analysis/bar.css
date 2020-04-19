@@ -1,0 +1,52 @@
+html, body {
+  margin: 10px;
+  padding: 0;
+  font-family: sans-serif;
+}
+h1 {
+  text-align: center;
+}
+p {
+  text-align: center;
+  font-size: large;
+}
+.rectangle {
+	fill: steelblue;
+}
+.rectangle:hover {
+	fill: orange;
+}
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: center;
+    font-size: x-large;
+    margin-bottom: 20px;
+}
+.rating > span {
+    display: inline-block;
+    position: relative;
+    width: 1.2em;
+}
+.rating > span:hover,
+.rating > span:hover ~ span {
+    color: transparent;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+    content: "\2605";
+    position: absolute;
+    left: 0;
+    color: gold;
+}
+.selected{color:gold;}
