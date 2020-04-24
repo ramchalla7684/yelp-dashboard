@@ -1,0 +1,232 @@
+<!-- Reference https://www.d3-graph-gallery.com/graph/barplot_animation_start.html -->
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .toolTip {
+position: absolute;
+display: none;
+
+background: none repeat scroll 0 0 #fafafa;
+border: 1px solid #bdbdbd;
+padding: 5px;
+text-align: center;
+}
+</style>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v5.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<button onclick="click1()"> Click </button>
+<script>
+
+   
+
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 90, left: 60},
+    width = 500 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+            
+var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+ data = [
+  {
+    "month": "Jan",
+    "checkin": 100
+  },
+  {
+    "month": "Feb",
+    "checkin": 30
+  },
+  {
+    "month": "March",
+    "checkin": 180
+  },
+  {
+    "month": "April",
+    "checkin": 200
+  },
+  {
+    "month": "May",
+    "checkin": 70
+  },
+  {
+    "month": "Jun",
+    "checkin": 60
+  },
+  {
+    "month": "Jul",
+    "checkin": 250
+  },
+  {
+    "month": "Aug",
+    "checkin": 123
+  },
+  {
+    "month": "Sept",
+    "checkin": 180
+  },
+  {
+    "month": "Oct",
+    "checkin": 156
+  },
+  {
+    "month": "Nov",
+    "checkin": 175
+  },
+  {
+    "month": "Dec",
+    "checkin": 232
+  }
+];
+
+var d2 =  [
+  {
+    "month": "Jan",
+    "checkin": 100
+  },
+  {
+    "month": "Feb",
+    "checkin": 30
+  },
+  {
+    "month": "March",
+    "checkin": 43
+  },
+  {
+    "month": "April",
+    "checkin": 212
+  },
+  {
+    "month": "May",
+    "checkin": 122
+  },
+  {
+    "month": "Jun",
+    "checkin": 60
+  },
+  {
+    "month": "Jul",
+    "checkin": 250
+  },
+  {
+    "month": "Aug",
+    "checkin": 32
+  },
+  {
+    "month": "Sept",
+    "checkin": 180
+  },
+  {
+    "month": "Oct",
+    "checkin": 156
+  },
+  {
+    "month": "Nov",
+    "checkin": 175
+  },
+  {
+    "month": "Dec",
+    "checkin": 212
+  }
+];
+
+// X axis
+function checkins(data) {
+
+   
+ 
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .domain(data.map(function(d) { return d.month; }))
+  .padding(0.3);
+
+svg.append("g")
+.attr("class", "x-axis")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x));
+
+  
+ 
+
+
+// Add Y axis
+var y = d3.scaleLinear()
+  .domain([0, 300])
+  .range([ height, 0]);
+svg.append("g")
+.attr("class", "yaxis")
+
+  .call(d3.axisLeft(y));
+
+  svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Check ins");   
+
+// Bars
+svg.selectAll("bar")
+  .data(data)
+  .enter()
+  .append("rect")
+    .attr("x", function(d) { return x(d.month); })
+    .attr("width", x.bandwidth())
+    .attr("fill", "#69b3a2")
+    // no bar at the beginning thus:
+    .attr("height", function(d) { return height - y(0); }) 
+    .attr("y", function(d) { return y(0); })
+    .on("mousemove", function(d){
+            tooltip
+              .style("left", d3.event.pageX + "px")
+              .style("top", d3.event.pageY - 30 + "px")
+              .style("display", "inline-block")
+              .html((d.checkin));
+        })
+    		.on("mouseout", function(d){ tooltip.style("display", "none");});
+
+// Animation
+svg.selectAll("rect")
+  .transition()
+  .duration(800)
+  .attr("y", function(d) { return y(d.checkin); })
+  .attr("height", function(d) { return height - y(d.checkin); })
+  .delay(function(d,i){return(i*80)})
+return y;
+}
+
+function update(data, y) {
+
+ svg.selectAll("rect")
+ .data(data)
+  .transition()
+  .duration(800)
+  .attr("y", function(d) { return y(d.checkin); })
+  .attr("height", function(d) { return height - y(d.checkin); })
+  .delay(function(d,i){return(i*80)})   
+
+}
+ y = checkins(data);
+
+
+
+function click1() {
+
+console.log("clicked");
+    update(d2, y);
+}
+
+
+</script>
