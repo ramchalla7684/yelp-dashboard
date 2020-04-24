@@ -1,67 +1,188 @@
 //dummy data
-var words = [{rating: "1", phrase: "mac cheese", sentiment: "0.8", sentimentCode: "P", frequency: "10"},
-            {rating: "1", phrase: "gabi good", sentiment: "0.5", sentimentCode: "P", frequency: "5"},
-            {rating: "1", phrase: "steak knife", sentiment: "0.1", sentimentCode: "P", frequency: "3"},
-            {rating: "1", phrase: "service", sentiment: "-0.8", sentimentCode: "N", frequency: "1"},
-            {rating: "2", phrase: "washroom", sentiment: "0.7", sentimentCode: "P", frequency: "10"},
-            {rating: "2", phrase: "dirty", sentiment: "-0.5", sentimentCode: "N", frequency: "5"},
-            {rating: "2", phrase: "clean", sentiment: "0.1", sentimentCode: "P", frequency: "3"},
-            {rating: "2", phrase: "tasty", sentiment: "0.8", sentimentCode: "P", frequency: "1"},
-            {rating: "3", phrase: "mushroom", sentiment: "-0.7", sentimentCode: "N", frequency: "10"},
-            {rating: "3", phrase: "not good", sentiment: "-0.5", sentimentCode: "N", frequency: "5"},
-            {rating: "3", phrase: "DBC", sentiment: "0.1", sentimentCode: "P", frequency: "3"},
-            {rating: "3", phrase: "yummy", sentiment: "0.8", sentimentCode: "P", frequency: "1"},
-            {rating: "4", phrase: "best steak", sentiment: "0.7", sentimentCode: "P", frequency: "10"},
-            {rating: "4", phrase: "great view", sentiment: "0.5", sentimentCode: "P", frequency: "5"},
-            {rating: "4", phrase: "creme brule", sentiment: "0.1", sentimentCode: "P", frequency: "3"},
-            {rating: "4", phrase: "waiter", sentiment: "-0.2", sentimentCode: "N", frequency: "1"},
-            {rating: "5", phrase: "wine list", sentiment: "0.9", sentimentCode: "P", frequency: "10"},
-            {rating: "5", phrase: "dinner", sentiment: "0.5", sentimentCode: "P", frequency: "5"},
-            {rating: "5", phrase: "food", sentiment: "0.1", sentimentCode: "P", frequency: "3"},
-            {rating: "5", phrase: "fondue", sentiment: "0.8", sentimentCode: "P", frequency: "1"}]
-            
+var words = [{
+        rating: "1",
+        phrase: "mac cheese",
+        sentiment: "0.8",
+        sentimentCode: "P",
+        frequency: "10"
+    },
+    {
+        rating: "1",
+        phrase: "gabi good",
+        sentiment: "0.5",
+        sentimentCode: "P",
+        frequency: "5"
+    },
+    {
+        rating: "1",
+        phrase: "steak knife",
+        sentiment: "0.1",
+        sentimentCode: "P",
+        frequency: "3"
+    },
+    {
+        rating: "1",
+        phrase: "service",
+        sentiment: "-0.8",
+        sentimentCode: "N",
+        frequency: "1"
+    },
+    {
+        rating: "2",
+        phrase: "washroom",
+        sentiment: "0.7",
+        sentimentCode: "P",
+        frequency: "10"
+    },
+    {
+        rating: "2",
+        phrase: "dirty",
+        sentiment: "-0.5",
+        sentimentCode: "N",
+        frequency: "5"
+    },
+    {
+        rating: "2",
+        phrase: "clean",
+        sentiment: "0.1",
+        sentimentCode: "P",
+        frequency: "3"
+    },
+    {
+        rating: "2",
+        phrase: "tasty",
+        sentiment: "0.8",
+        sentimentCode: "P",
+        frequency: "1"
+    },
+    {
+        rating: "3",
+        phrase: "mushroom",
+        sentiment: "-0.7",
+        sentimentCode: "N",
+        frequency: "10"
+    },
+    {
+        rating: "3",
+        phrase: "not good",
+        sentiment: "-0.5",
+        sentimentCode: "N",
+        frequency: "5"
+    },
+    {
+        rating: "3",
+        phrase: "DBC",
+        sentiment: "0.1",
+        sentimentCode: "P",
+        frequency: "3"
+    },
+    {
+        rating: "3",
+        phrase: "yummy",
+        sentiment: "0.8",
+        sentimentCode: "P",
+        frequency: "1"
+    },
+    {
+        rating: "4",
+        phrase: "best steak",
+        sentiment: "0.7",
+        sentimentCode: "P",
+        frequency: "10"
+    },
+    {
+        rating: "4",
+        phrase: "great view",
+        sentiment: "0.5",
+        sentimentCode: "P",
+        frequency: "5"
+    },
+    {
+        rating: "4",
+        phrase: "creme brule",
+        sentiment: "0.1",
+        sentimentCode: "P",
+        frequency: "3"
+    },
+    {
+        rating: "4",
+        phrase: "waiter",
+        sentiment: "-0.2",
+        sentimentCode: "N",
+        frequency: "1"
+    },
+    {
+        rating: "5",
+        phrase: "wine list",
+        sentiment: "0.9",
+        sentimentCode: "P",
+        frequency: "10"
+    },
+    {
+        rating: "5",
+        phrase: "dinner",
+        sentiment: "0.5",
+        sentimentCode: "P",
+        frequency: "5"
+    },
+    {
+        rating: "5",
+        phrase: "food",
+        sentiment: "0.1",
+        sentimentCode: "P",
+        frequency: "3"
+    },
+    {
+        rating: "5",
+        phrase: "fondue",
+        sentiment: "0.8",
+        sentimentCode: "P",
+        frequency: "1"
+    }
 ]
-//function to update data
-function update_data(count){
-    data = words.filter(function(d){return (d.rating==6-count);});
 
-    y.domain(data.map(function(d){ return  d.phrase;}));
+//function to update data
+function update_data(count) {
+    data = words.filter(function (d) {
+        return (d.rating == 6 - count);
+    });
+
+    y.domain(data.map(function (d) {
+        return d.phrase;
+    }));
     // yAxis.scale(y);
 
     d3.selectAll(".rectangle")
         .data(data)
         .transition()
-        .style("fill", function(d){
+        .style("fill", function (d) {
             if (d["sentiment"] < 0) {
-                return "#C70039" ;
-                }
-                else {
-                    return "steelblue";
-                }
-            })
-        .attr("width", function(d){
+                return "#C70039";
+            } else {
+                return "steelblue";
+            }
+        })
+        .attr("width", function (d) {
             if (d["sentiment"] < 0) {
 
-                return width/2 - x(+d["sentiment"]);
-            }
-            else {
-                return x(+d["sentiment"]) - width/2;
+                return width / 2 - x(+d["sentiment"]);
+            } else {
+                return x(+d["sentiment"]) - width / 2;
             }
         })
-        .attr("y", function(d, i){
-            return (height / data.length) * i ;
+        .attr("y", function (d, i) {
+            return (height / data.length) * i;
         })
-        .attr("x", function(d){
+        .attr("x", function (d) {
             if (d["sentiment"] < 0) {
                 return x(+d["sentiment"]);
-            }
-            else {
-                return width/2;
+            } else {
+                return width / 2;
             }
         })
         .ease("linear")
         .select("title")
-        .text(function(d){
+        .text(function (d) {
             return d.phrase + " : " + d["sentiment"];
         });
 
@@ -69,23 +190,32 @@ function update_data(count){
         .transition()
         .call(yAxis);
 }
-data = words.filter(function(d){return (d.rating=="1");});
-var margin = {top: 0, right: 180, bottom: 220, left: 250},
+data = words.filter(function (d) {
+    return (d.rating == "1");
+});
+var margin = {
+        top: 0,
+        right: 180,
+        bottom: 220,
+        left: 250
+    },
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var svg = d3.select("body").append("svg")
-	.attr("width", width + margin.left + margin.right)
+    .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-	.append("g")
+    .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 window.x = d3.scale.linear()
-        .domain([-1,1])
-        .range([0,width]);
+    .domain([-1, 1])
+    .range([0, width]);
 window.y = d3.scale.ordinal()
-        .domain(data.map(function(d){ return  d.phrase;}))
-        .rangeBands([0, height]);
+    .domain(data.map(function (d) {
+        return d.phrase;
+    }))
+    .rangeBands([0, height]);
 
 
 window.xAxis = d3.svg.axis()
@@ -105,7 +235,7 @@ svg.append("g")
     .style("text-anchor", "end")
     .attr("dx", "-.8em")
     .attr("dy", "-.55em")
-    .attr("transform", "rotate(-90)" );
+    .attr("transform", "rotate(-90)");
 
 
 svg.append("g")
@@ -116,48 +246,45 @@ svg.selectAll("rectangle")
     .data(data)
     .enter()
     .append("rect")
-    .attr("class","rectangle")
-    .style("fill", function(d){
+    .attr("class", "rectangle")
+    .style("fill", function (d) {
         if (d["sentiment"] < 0) {
-            return "#C70039" ;
-            }
-            else {
-                return "steelblue";
-            }
+            return "#C70039";
+        } else {
+            return "steelblue";
+        }
     })
-    .attr("height", height/data.length)
-    .attr("width", function(d){
+    .attr("height", height / data.length)
+    .attr("width", function (d) {
         if (d["sentiment"] < 0) {
 
-            return width/2 - x(+d["sentiment"]);
-        }
-        else {
-            return x(+d["sentiment"]) - width/2;
+            return width / 2 - x(+d["sentiment"]);
+        } else {
+            return x(+d["sentiment"]) - width / 2;
         }
     })
-    .attr("y", function(d, i){
-        return (height / data.length) * i ;
+    .attr("y", function (d, i) {
+        return (height / data.length) * i;
     })
-    .attr("x", function(d){
-            if (d["sentiment"] < 0) {
+    .attr("x", function (d) {
+        if (d["sentiment"] < 0) {
             return x(+d["sentiment"]);
-            }
-            else {
-            return width/2;
-            }
+        } else {
+            return width / 2;
+        }
     })
     .append("title")
-    .text(function(d){
+    .text(function (d) {
         return d.phrase + " : " + d["sentiment"];
     });
 
 
-$('.star').on('click', function(){
-        $('.star').addClass('selected');
-        var count = $(this).attr('name');
-        for (var i=0; i<count-1; i++){        
-            $('.star').eq(i).removeClass('selected');
-        }
-        update_data(count);
+$('.star').on('click', function () {
+    $('.star').addClass('selected');
+    var count = $(this).attr('name');
+    for (var i = 0; i < count - 1; i++) {
+        $('.star').eq(i).removeClass('selected');
+    }
+    update_data(count);
 
-    });
+});

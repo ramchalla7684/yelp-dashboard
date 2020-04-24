@@ -15,7 +15,7 @@ const DataStore = (function () {
         },
         getBusinesses: function (category) {
             return new Promise((resolve, reject) => {
-                fetch(BASE_URL + `/api/v1/businesses?category=${category}`)
+                fetch(BASE_URL + `/api/v1/businesses?category=${category}&top=15`)
                     .then(response => response.json())
                     .then(response => resolve(response))
                     .catch(error => {
@@ -24,6 +24,16 @@ const DataStore = (function () {
                     });
             });
         },
-
+        getBusinessDetails: function (businessID) {
+            return new Promise((resolve, reject) => {
+                fetch(BASE_URL + `/api/v1/businesses/${businessID}`)
+                    .then(response => response.json())
+                    .then(response => resolve(response))
+                    .catch(error => {
+                        console.error(error);
+                        reject(null);
+                    });
+            });
+        }
     };
 })();
