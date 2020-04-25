@@ -38,6 +38,21 @@ async function loadBusinessCategories() {
 async function loadBusinesses(category) {
     let businesses = await DataStore.getBusinesses(category);
     console.log(businesses);
+    var mymap = L.map('mapid').setView([ businesses[0].latitude, businesses[0].longitude ], 10); 
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoicmVraGF5ZyIsImEiOiJjazk2cDhkem4weTd4M2luMWxvaGJ0Y3hhIn0.5J3UDWncn8GVw5UHUIMSDA', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoicmVraGF5ZyIsImEiOiJjazk2cDhkem4weTd4M2luMWxvaGJ0Y3hhIn0.5J3UDWncn8GVw5UHUIMSDA'
+}).addTo(mymap);
+for (var i = 0; i < businesses.length; i++) {
+    marker = new L.marker([businesses[i]['latitude'],businesses[i]['longitude']])
+        .bindPopup(businesses[i]['name'])
+        .addTo(mymap)
+        .on('click', onClick);
+}
 }
 
 
