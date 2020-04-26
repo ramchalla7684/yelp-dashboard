@@ -82,7 +82,9 @@ function showOnMap(businesses) {
     markers = [];
     for (let business of businesses) {
         let marker = new L.marker([business.latitude, business.longitude])
-            .bindPopup(business.name)
+            .bindPopup(`
+                <h3>${business.name}</h3>
+                <h4>${business.address}</h4>`)
             .addTo(map)
             .on('mouseover', function (event) {
                 this.openPopup();
