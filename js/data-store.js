@@ -14,6 +14,7 @@ const DataStore = (function () {
             });
         },
         getBusinesses: function (category) {
+            category = encodeURIComponent(category);
             return new Promise((resolve, reject) => {
                 fetch(BASE_URL + `/api/v1/businesses?category=${category}&top=15`)
                     .then(response => response.json())
