@@ -28,6 +28,9 @@ text-align: center;
 var margin = {top: 10, right: 30, bottom: 90, left: 60},
     width = 500 - margin.left - margin.right,
     height = 450 - margin.top - margin.bottom;
+    var opacity = d3.scaleLinear()
+                .domain([0, 300])
+                .range([0.2,1.0]);
 
 // append the svg object to the body of the page
 var svg = d3.select("#my_dataviz")
@@ -184,10 +187,11 @@ svg.selectAll("bar")
   .append("rect")
     .attr("x", function(d) { return x(d.month); })
     .attr("width", x.bandwidth())
-    .attr("fill", "#69b3a2")
+    .attr("fill", "#370C35")
     // no bar at the beginning thus:
     .attr("height", function(d) { return height - y(0); }) 
     .attr("y", function(d) { return y(0); })
+    .attr("opacity", function(d) { return opacity(d.checkin)})
     .on("mousemove", function(d){
             tooltip
               .style("left", d3.event.pageX + "px")
@@ -215,6 +219,7 @@ function update(data, y) {
   .duration(800)
   .attr("y", function(d) { return y(d.checkin); })
   .attr("height", function(d) { return height - y(d.checkin); })
+  .attr("opacity", function(d) { return opacity(d.checkin)})
   .delay(function(d,i){return(i*80)})   
 
 }

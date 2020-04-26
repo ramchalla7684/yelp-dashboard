@@ -44,6 +44,10 @@
     .tooltip-date, .tooltip-likes {
         font-weight: bold;
     }
+    .dot {
+    fill: #4682B4;
+    stroke: #fff;
+}
 
 </style>
 
@@ -187,7 +191,7 @@
     "likes": "2.8"
   }] }
   ];
-
+  
 
     currentData = JSON.parse(JSON.stringify(all_data[0].data));
     currentData.forEach(function(d) {
@@ -222,6 +226,8 @@
             .attr("d", line);
 
             const pathLength = path.node().getTotalLength();
+
+
   // D3 provides lots of transition options, have a play around here:
   // https://github.com/d3/d3-transition
   const transitionPath = d3
@@ -231,15 +237,27 @@
   path
     .attr("stroke-dashoffset", pathLength)
     .attr("stroke-dasharray", pathLength)
-    .transition(transitionPath)
-    .attr("stroke-dashoffset", 0);
+  
+    .transition(transitionPath).on("end", function() {
+      
+    svg.selectAll(".dot")
+    .data(currentData)
+  .enter().append("circle") // Uses the enter().append() method
+.attr("class", "dot")
+    .attr("cx", function(d, i) { return x(d.date) })
+    .attr("cy", function(d) { return y(d.likes) })
+    .attr("r", 5);
+    })
+    .attr("stroke-dashoffset", 0)
+   
+  
+
 
         var focus = svg.append("g")
             .attr("class", "focus")
             .style("display", "none");
 
-        focus.append("circle")
-            .attr("r", 5);
+       
 
         focus.append("rect")
             .attr("class", "tooltip")
@@ -299,7 +317,7 @@
          
 
         svg.select(".y-axis").remove();
-
+        svg.selectAll(".dot").remove();
 
        svg.append("g")
             .attr("class", "x-axis")
@@ -326,7 +344,16 @@
   path
     .attr("stroke-dashoffset", pathLength)
     .attr("stroke-dasharray", pathLength)
-    .transition(transitionPath)
+    .transition(transitionPath).on("end", function() {
+      
+      svg.selectAll(".dot")
+      .data(currentData)
+    .enter().append("circle") // Uses the enter().append() method
+  .attr("class", "dot")
+      .attr("cx", function(d, i) { return x(d.date) })
+      .attr("cy", function(d) { return y(d.likes) })
+      .attr("r", 5);
+      })
     .attr("stroke-dashoffset", 0);
 
         }
