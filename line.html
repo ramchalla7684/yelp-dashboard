@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="./css/main.css">
 <meta charset="utf-8">
 <style>
 
@@ -50,12 +53,37 @@
 }
 
 </style>
+</head>
 
-<body>   <button onclick="updateChart(all_data[0].data)">Daily</button>
-    <button onclick="updateChart(all_data[1].data)">Weekly</button>
-    <button onclick="updateChart(all_data[2].data)">Monthly</button>
-    </body>
+<body>
+  <div class="date-picker-1">
+    <p> Rating Trends </p>
+      <div class="years" id="years">
+        <label class="container">
+          <input type="radio" checked="checked" name="radio" value="1" onchange="getRatings(value)"> Jan - Mar
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">
+          <input type="radio" name="radio" value="2" onchange="getRatings(value)">Apr - Jun
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">
+          <input type="radio" name="radio" value="3" onchange="getRatings(value)">Jul - Sep
+          <span class="checkmark"></span>
+        </label>
+        <label class="container">
+          <input type="radio" name="radio" value="4" onchange="getRatings(value)">Oct - Dec
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <br/>
+      <button onclick="updateChart(all_data[0].data)">Daily</button>
+      <button onclick="updateChart(all_data[1].data)">Weekly</button>
+      <button onclick="updateChart(all_data[2].data)">Monthly</button>
+  </div>
+</body>
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="./js/data-store.js"></script>
 <script>
 
     var margin = { top: 30, right: 120, bottom: 30, left: 50 },
@@ -74,7 +102,7 @@
     var y = d3.scaleLinear()
             .range([height, 0]);
 
-    
+
 
     var line = d3.line()
         .x(function(d) { return x(d.date); })
@@ -86,8 +114,8 @@
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
- 
-       
+
+
         var all_data = [
     { 'name': 'daily', 'data': [
   {
@@ -191,7 +219,6 @@
     "likes": "2.8"
   }] }
   ];
-  
 
     currentData = JSON.parse(JSON.stringify(all_data[0].data));
     currentData.forEach(function(d) {
@@ -199,31 +226,25 @@
             d.likes = +d.likes;
         });
 
-
         x.domain([currentData[0].date, currentData[currentData.length - 1].date]);
         y.domain([1,5]);
-
-
-      
-
-   
 
 
         svg.append("g")
             .attr("class", "x-axis")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x));
-          
+
 
         svg.append("g")
             .attr("class", "y-axis")
             .call(d3.axisLeft(y));
-         
 
-      var path =   svg.append("path")
-            .datum(currentData)
-            .attr("class", "line")
-            .attr("d", line);
+
+      var path = svg.append("path")
+                    .datum(currentData)
+                    .attr("class", "line")
+                    .attr("d", line);
 
             const pathLength = path.node().getTotalLength();
 
@@ -234,30 +255,27 @@
     .transition()
     .ease(d3.easeSin)
     .duration(2500);
-  path
+    path
     .attr("stroke-dashoffset", pathLength)
     .attr("stroke-dasharray", pathLength)
-  
-    .transition(transitionPath).on("end", function() {
-      
-    svg.selectAll(".dot")
-    .data(currentData)
-  .enter().append("circle") // Uses the enter().append() method
-.attr("class", "dot")
-    .attr("cx", function(d, i) { return x(d.date) })
-    .attr("cy", function(d) { return y(d.likes) })
-    .attr("r", 5);
-    })
-    .attr("stroke-dashoffset", 0)
-   
-  
 
+    .transition(transitionPath).on("end", function() {
+
+    svg.selectAll(".dot")
+       .data(currentData)
+       .enter().append("circle") // Uses the enter().append() method
+       .attr("class", "dot")
+       .attr("cx", function(d, i) { return x(d.date) })
+       .attr("cy", function(d) { return y(d.likes) })
+       .attr("r", 5);
+    })
+       .attr("stroke-dashoffset", 0)
 
         var focus = svg.append("g")
             .attr("class", "focus")
             .style("display", "none");
 
-       
+
 
         focus.append("rect")
             .attr("class", "tooltip")
@@ -302,65 +320,71 @@
             focus.select(".tooltip-likes").text(formatValue(d.likes));
         }
 
-      function  updateChart(data) {
-        
+function  updateChart(data) {
+        console.log("currentData: "+JSON.stringify(data))
         data = JSON.parse(JSON.stringify(data));
-    data.forEach(function(d) {
+        data.forEach(function(d) {
+            console.log("date: "+d.date)
+            console.log("likes: "+d.likes+ " : "+typeof d.likes)
             d.date = parseDate(d.date);
             d.likes = +d.likes;
         });
 
-        currentData = data;
-      x =   x.domain([currentData[0].date, currentData[currentData.length - 1].date]);
-       y = y.domain([1,5]);
-   svg.select(".x-axis").remove();
-         
+            currentData = data;
+            x = x.domain([currentData[0].date, currentData[currentData.length - 1].date]);
+            y = y.domain([1,5]);
+            svg.select(".x-axis").remove();
 
-        svg.select(".y-axis").remove();
-        svg.selectAll(".dot").remove();
 
-       svg.append("g")
-            .attr("class", "x-axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-          
+            svg.select(".y-axis").remove();
+            svg.selectAll(".dot").remove();
 
-        svg.append("g")
-            .attr("class", "y-axis")
-            .call(d3.axisLeft(y));
-     
-        
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
+
+
+            svg.append("g")
+                .attr("class", "y-axis")
+                .call(d3.axisLeft(y));
+
+
             var path =   svg.select("path")
             .datum(data)
             .attr("class", "line")
             .attr("d", line);
 
             const pathLength = path.node().getTotalLength();
-  
-  const transitionPath = d3
-    .transition()
-    .ease(d3.easeSin)
-    .duration(2500);
-  path
-    .attr("stroke-dashoffset", pathLength)
-    .attr("stroke-dasharray", pathLength)
-    .transition(transitionPath).on("end", function() {
-      
-      svg.selectAll(".dot")
-      .data(currentData)
-    .enter().append("circle") // Uses the enter().append() method
-  .attr("class", "dot")
-      .attr("cx", function(d, i) { return x(d.date) })
-      .attr("cy", function(d) { return y(d.likes) })
-      .attr("r", 5);
-      })
-    .attr("stroke-dashoffset", 0);
 
-        }
+            const transitionPath = d3
+              .transition()
+              .ease(d3.easeSin)
+              .duration(2500);
+            path
+              .attr("stroke-dashoffset", pathLength)
+              .attr("stroke-dasharray", pathLength)
+              .transition(transitionPath).on("end", function() {
 
-        
+            svg.selectAll(".dot")
+               .data(currentData)
+               .enter().append("circle") // Uses the enter().append() method
+               .attr("class", "dot")
+               .attr("cx", function(d, i) { return x(d.date) })
+               .attr("cy", function(d) { return y(d.likes) })
+               .attr("r", 5);
+            })
+              .attr("stroke-dashoffset", 0);
 
+                  }
 
-
+async function getRatings(value) {
+    alert("Hiii: "+value)
+    let ratingsData = await DataStore.getRatings(value);
+    console.log(ratingsData);
+    updateChart(ratingsData[0].data);
+  //  reloadDashboard(ratingsData);
+}
 
 </script>
+</html>
