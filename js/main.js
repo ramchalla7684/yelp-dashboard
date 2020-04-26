@@ -98,5 +98,9 @@ function showOnMap(businesses) {
     map.flyTo(new L.LatLng(businesses[0].latitude, businesses[0].longitude));
 }
 
+function myFunction() {
+  var x = document.getElementById("trendYears").value;
+  alert(x+" selected!")
+}
 
 onDOMLoaded();
