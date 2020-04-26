@@ -50,7 +50,7 @@ async function loadBusinessDetails(businessID) {
     let business = await DataStore.getBusinessDetails(businessID);
     console.log(business);
 
-    activateDashboard(business);
+    reloadDashboard(business);
 }
 
 async function reloadDashboard(business) {
@@ -80,11 +80,19 @@ function showOnMap(businesses) {
     }
 
     markers = [];
-    for (var i = 0; i < businesses.length; i++) {
-        let marker = new L.marker([businesses[i]['latitude'], businesses[i]['longitude']])
-            .bindPopup(businesses[i]['name'])
+    for (let business of businesses) {
+        let marker = new L.marker([business.latitude, business.longitude])
+            .bindPopup(business.name)
             .addTo(map)
-            .on('click', (event) => console.log(event));
+            .on('mouseover', function (event) {
+                this.openPopup();
+            })
+            .on('mouseout', function (event) {
+                this.closePopup();
+            })
+            .on('click', (event) => {
+                loadBusinessDetails(business.business_id);
+            });
         markers.push(marker);
     }
     map.flyTo(new L.LatLng(businesses[0].latitude, businesses[0].longitude));
