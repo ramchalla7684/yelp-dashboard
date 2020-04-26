@@ -3,140 +3,120 @@ var words = [{
         rating: "1",
         phrase: "mac cheese",
         sentiment: "0.8",
-        sentimentCode: "P",
         frequency: "10"
     },
     {
         rating: "1",
         phrase: "gabi good",
         sentiment: "0.5",
-        sentimentCode: "P",
         frequency: "5"
     },
     {
         rating: "1",
         phrase: "steak knife",
         sentiment: "0.1",
-        sentimentCode: "P",
         frequency: "3"
     },
     {
         rating: "1",
         phrase: "service",
         sentiment: "-0.8",
-        sentimentCode: "N",
         frequency: "1"
     },
     {
         rating: "2",
         phrase: "washroom",
         sentiment: "0.7",
-        sentimentCode: "P",
         frequency: "10"
     },
     {
         rating: "2",
         phrase: "dirty",
         sentiment: "-0.5",
-        sentimentCode: "N",
         frequency: "5"
     },
     {
         rating: "2",
         phrase: "clean",
         sentiment: "0.1",
-        sentimentCode: "P",
         frequency: "3"
     },
     {
         rating: "2",
         phrase: "tasty",
         sentiment: "0.8",
-        sentimentCode: "P",
         frequency: "1"
     },
     {
         rating: "3",
         phrase: "mushroom",
         sentiment: "-0.7",
-        sentimentCode: "N",
         frequency: "10"
     },
     {
         rating: "3",
         phrase: "not good",
         sentiment: "-0.5",
-        sentimentCode: "N",
         frequency: "5"
     },
     {
         rating: "3",
         phrase: "DBC",
         sentiment: "0.1",
-        sentimentCode: "P",
         frequency: "3"
     },
     {
         rating: "3",
         phrase: "yummy",
         sentiment: "0.8",
-        sentimentCode: "P",
         frequency: "1"
     },
     {
         rating: "4",
         phrase: "best steak",
         sentiment: "0.7",
-        sentimentCode: "P",
         frequency: "10"
     },
     {
         rating: "4",
         phrase: "great view",
         sentiment: "0.5",
-        sentimentCode: "P",
         frequency: "5"
     },
     {
         rating: "4",
         phrase: "creme brule",
         sentiment: "0.1",
-        sentimentCode: "P",
         frequency: "3"
     },
     {
         rating: "4",
         phrase: "waiter",
         sentiment: "-0.2",
-        sentimentCode: "N",
         frequency: "1"
     },
     {
         rating: "5",
         phrase: "wine list",
         sentiment: "0.9",
-        sentimentCode: "P",
         frequency: "10"
     },
     {
         rating: "5",
         phrase: "dinner",
         sentiment: "0.5",
-        sentimentCode: "P",
         frequency: "5"
     },
     {
         rating: "5",
         phrase: "food",
         sentiment: "0.1",
-        sentimentCode: "P",
         frequency: "3"
     },
     {
         rating: "5",
         phrase: "fondue",
         sentiment: "0.8",
-        sentimentCode: "P",
         frequency: "1"
     }
 ]

@@ -6,6 +6,10 @@ html, body {
 h1 {
   text-align: center;
 }
+p {
+  text-align: center;
+  font-size: large;
+}
 #controls {
   font-size: 18px;
   margin-bottom: 10px;
@@ -17,14 +21,14 @@ input[type="radio"] {
 }
 
 span:nth-child(2) {
-  margin-left: 20px;
+  margin-left: 28px;
 }
 
 #word-info {
   color: #666;
-  font-size: 28px;
+  font-size: 20px;
   position: absolute;
-  top: 135px;
+  top: 215px;
   left: 40px;
 }
 
@@ -40,3 +44,28 @@ circle {
 .sentiment-key-element text {
   fill: white;
 }
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: x-large;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  margin: 4px;
+}
+.rating > span:hover,
+.rating > span:hover ~ span {
+  color: transparent;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+  content: "\2605";
+  position: absolute;
+  left: 0;
+  color: gold;
+}
+.selected{color:gold;}
