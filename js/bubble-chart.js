@@ -134,13 +134,13 @@ var colorCodes = {
 
 class BubbleChart {
     constructor() {
-        this.width = 1200;
-        this.height = 600;
+        this.width = 800;
+        this.height = 400;
 
         this.svg = null;
         this.circleSize = {
             min: 10,
-            max: 80
+            max: 60
         };
         this.circles = null;
         this.forces = null;
@@ -426,9 +426,9 @@ $('.star').on('click', function () {
         $('.star').eq(i).removeClass('selected');
     }
     data = words.filter(function (d) {
-        return (d.rating == 6 - count);
+        return (d.rating == 1);
     });
-    update_data(data);
+    bubbleChart.update(data);
 
 });
 
