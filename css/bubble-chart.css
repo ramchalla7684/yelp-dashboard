@@ -1,0 +1,65 @@
+#controls {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+input[type="radio"] {
+  margin-top: -1px;
+  vertical-align: middle;
+}
+
+span:nth-child(2) {
+  margin-left: 28px;
+}
+
+#word-info {
+  color: #666;
+  font-size: 20px;
+  position: absolute;
+  top: 215px;
+  left: 40px;
+}
+
+svg {
+  border: 1px solid #ddd;
+}
+
+circle {
+  stroke: white;
+  stroke-width: 1.5;
+}
+
+.sentiment-key-element text {
+  fill: white;
+}
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: x-large;
+}
+
+.rating>span {
+  display: inline-block;
+  position: relative;
+  margin: 4px;
+}
+
+.rating>span:hover,
+.rating>span:hover~span {
+  color: transparent;
+}
+
+.rating>span:hover:before,
+.rating>span:hover~span:before {
+  content: "\2605";
+  position: absolute;
+  left: 0;
+  color: gold;
+}
+
+.selected {
+  color: gold;
+}
