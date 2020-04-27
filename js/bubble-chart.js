@@ -142,7 +142,7 @@ class BubbleChart {
             min: 10,
             max: 80
         };
-        this.circles = null;
+        this.node = null;
         this.forces = null;
     }
 
@@ -259,31 +259,33 @@ class BubbleChart {
 
     createCircles(data, circleRadiusScale) {
         var formatFrequency = d3.format(",");
-        this.circles = this.svg.selectAll("circle")
+        var nodes = svg.append("g")
+            .attr("class", "nodes");
+        
+        this.node = nodes.selectAll("node")
             .data(data)
             .enter()
-            .append("circle")
-            .attr("r", function (d) {
-                return circleRadiusScale(d.frequency);
-            })
-            .on("mouseover", function (d) {
+            .append("g");
+    
+        var circle = this.node.append("circle")
+            .attr("r", function(d) { return circleRadiusScale(d.frequency); })
+            .on("mouseover", function(d) {
                 updateWordInfo(d);
             })
-            .on("mouseout", function (d) {
+            .on("mouseout", function(d) {
                 updateWordInfo();
             });
-
-        this.circles.data(data).enter().append("text")
-            .attr("dy", ".2em")
-            .style("text-anchor", "middle")
-            .text(function (d) {
-                return d.data.phrase.substring(0, d.r / 3);
-            })
+    
+        var text = this.node.append("text")
+            .text(function(d) {
+                        return d.phrase; })
+            .attr("y", 0)
+            .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
-            .attr("font-size", function (d) {
-                return d.r / 5;
-            })
-            .attr("fill", "white");
+            .attr("font-size", function(d){
+                return d.frequency*3; })
+            .attr("fill", "black");
+
         this.updateCircles();
 
         function updateWordInfo(word) {
@@ -296,7 +298,7 @@ class BubbleChart {
     }
 
     updateCircles() {
-        this.circles
+        this.node
             .attr("fill", function (d) {
                 if (d["sentiment"] > 0.1) {
                     return colorCodes["P"];
@@ -398,12 +400,10 @@ class BubbleChart {
             .force("collide", d3.forceCollide((d) => frequencyGrouping() ? 0 : circleRadiusScale(d.frequency) + 1));
         forceSimulation.nodes(data)
             .on("tick", () => {
-                this.circles
-                    .attr("cx", function (d) {
-                        return d.x;
-                    })
-                    .attr("cy", function (d) {
-                        return d.y;
+
+                this.node
+                    .attr("transform", function(d) {
+                        return "translate(" + d.x + "," + d.y + ")"
                     });
             });
     }
