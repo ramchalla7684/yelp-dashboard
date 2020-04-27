@@ -3,13 +3,15 @@ let map,
 let businessCategoriesEl,
     businessNameEl,
     businessAddressEl,
-    datePicker1;
+    datePicker1,
+    datePicker2;
 
 function onDOMLoaded() {
     businessCategoriesEl = document.querySelector('#business-categories');
-    datePicker1 = document.querySelector('#date-picker-1 ul');
     businessNameEl = document.querySelector('#business-name');
     businessAddressEl = document.querySelector('#business-address span');
+    datePicker1 = document.querySelector('#date-picker-1 ul');
+    datePicker2 = document.querySelector('#date-picker-2 ul');
 
     loadBusinessCategories();
 }
@@ -60,7 +62,6 @@ async function reloadDashboard(business) {
     showDataPicker1(business.available_dates);
     // showRatingsPlot();
     // showTopicsPlot();
-    // showDataPicker2();
     // showCheckinsPlot();
 }
 

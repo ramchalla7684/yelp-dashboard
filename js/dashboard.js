@@ -15,7 +15,8 @@ function showDataPicker1(availableDates) {
                 activeYearEl.classList.remove('active');
             }
             li.classList.add('active');
-            //TODO:
+
+            showDataPicker2(Object.keys(availableDates[year]));
         });
 
         datePicker1.appendChild(li);
@@ -24,6 +25,25 @@ function showDataPicker1(availableDates) {
     document.querySelector('#date-picker-1 li').click();
 }
 
-function showDataPicker2() {
+function showDataPicker2(quarters) {
+    datePicker2.innerHTML = '';
 
+    let quartersTxt = ['Jan-Mar', 'Apr-Jun', 'Jul-Sep', 'Oct-Dec'];
+
+    for (let quarter of quarters) {
+        let li = document.createElement('li');
+        li.textContent = quartersTxt[quarter];
+        li.addEventListener('click', (event) => {
+            let activeQuarterEl = document.querySelector('#date-picker-2 .active');
+            if (activeQuarterEl) {
+                activeQuarterEl.classList.remove('active');
+            }
+            li.classList.add('active');
+            //TODO:
+        });
+
+        datePicker2.appendChild(li);
+    }
+
+    document.querySelector('#date-picker-2 li').click();
 }
