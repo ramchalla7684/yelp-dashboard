@@ -20,8 +20,8 @@ var words = [{
       {
         rating: "1",
         phrase: "service",
-        sentiment: "-0.8",
-        frequency: "1"
+        sentiment: "0.7",
+        frequency: "9"
       },
       {
         rating: "2",
@@ -45,7 +45,7 @@ var words = [{
         rating: "2",
         phrase: "tasty",
         sentiment: "0.8",
-        frequency: "1"
+        frequency: "6"
       },
       {
         rating: "3",
@@ -69,7 +69,7 @@ var words = [{
         rating: "3",
         phrase: "yummy",
         sentiment: "0.8",
-        frequency: "1"
+        frequency: "2"
       },
       {
         rating: "4",
@@ -127,6 +127,11 @@ var colorCodes = {P: "steelblue", N: "#C70039", U: "#E2DF14"};
 data = words.filter(function (d) {
   return (d.rating == "1");
 });
+$('.star').addClass('selected');
+for (var i = 0; i < 5 - 1; i++) {
+  $('.star').eq(i).removeClass('selected');
+}
+
 width = 1200,
 height = 600;
 createSVG();
@@ -152,13 +157,15 @@ function update_data(data) {
   frequencies = data.map(function(word) { return +word.frequency; });
   frequencyExtent = d3.extent(frequencies);
   sentiment_scores = data.map(function(word) { return +word.sentiment; });
-  
   sentimentExtent = d3.extent(sentiment_scores);
   sentiments = Object.keys(sentimentNames);
   circleSize = { min: 10, max: 80 };
   circleRadiusScale = d3.scaleSqrt()
     .domain(frequencyExtent)
     .range([circleSize.min, circleSize.max]);
+  document.getElementById("combine").checked = false;
+  document.getElementById("sentiments").checked = false;
+  document.getElementById("frequency").checked = false;
 
   toggleSentimentKey(true);
   createCircles();
@@ -456,12 +463,13 @@ function addGroupingListeners() {
     }
 
     function createAxes() {
-      var numberOfTicks = 10,
+      var numberOfTicksX = (sentimentExtent[1] - sentimentExtent[0])*10,
+          numberOfTicksY = frequencyExtent[1]-frequencyExtent[0],
           tickFormatY = ".0s";
           tickFormatX = ".1f";
 
       var xAxis = d3.axisBottom(frequencyScaleX)
-        .ticks(numberOfTicks, tickFormatX);
+        .ticks(numberOfTicksX, tickFormatX);
 
       svg.append("g")
         .attr("class", "x-axis")
@@ -473,7 +481,7 @@ function addGroupingListeners() {
         .text("Sentiment Score");
 
       var yAxis = d3.axisLeft(frequencyScaleY)
-        .ticks(numberOfTicks, tickFormatY);
+        .ticks(numberOfTicksY, tickFormatY);
       svg.append("g")
         .attr("class", "y-axis")
         .attr("transform", "translate(" + offScreenXOffset + ",0)")
