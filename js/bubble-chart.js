@@ -179,6 +179,10 @@ class BubbleChart {
         this.circleRadiusScale = d3.scaleSqrt()
             .domain(frequencyExtent)
             .range([this.circleSize.min, this.circleSize.max]);
+        
+        document.getElementById("combine").checked = false;
+        document.getElementById("sentiments").checked = false;
+        document.getElementById("frequency").checked = false;
 
         this.toggleSentimentKey(sentiments, true);
         this.createCircles(data);
@@ -422,6 +426,7 @@ class BubbleChart {
                     .attr("transform", function (d) {
                         return "translate(" + d.x + "," + d.y + ")"
                     });
+
             });
     }
 
@@ -529,6 +534,11 @@ let data = words.filter(function (d) {
     return (d.rating == "1");
 });
 
+$('.star').addClass('selected');
+for (var i = 0; i < 5 - 1; i++) {
+  $('.star').eq(i).removeClass('selected');
+}
+
 let bubbleChart = new BubbleChart();
 bubbleChart.createSVG();
 bubbleChart.update(data);
@@ -554,4 +564,99 @@ function isChecked(elementID) {
 
 function frequencyGrouping() {
     return isChecked("#frequency");
+}
+
+function addGroupingListeners() {
+    addListener("#combine", forces.combine);
+    addListener("#sentiments", forces.sentiment);
+    addListener("#frequency", forces.frequency);
+
+    function addListener(selector, forces) {
+        d3.select(selector).on("click", function () {
+            updateForces(forces);
+            toggleSentimentKey(!frequencyGrouping());
+            toggleFrequencyAxes(frequencyGrouping());
+        });
+    }
+
+    function updateForces(forces) {
+        forceSimulation
+            .force("x", forces.x)
+            .force("y", forces.y)
+            .force("collide", d3.forceCollide(forceCollide))
+            .alphaTarget(0.5)
+            .restart();
+    }
+
+    function toggleFrequencyAxes(showAxes) {
+        var onScreenXOffset = 50,
+            offScreenXOffset = -40;
+        var onScreenYOffset = 50,
+            offScreenYOffset = 100;
+
+        if (d3.select(".x-axis").empty()) {
+            createAxes();
+        }
+        var xAxis = d3.select(".x-axis"),
+            yAxis = d3.select(".y-axis");
+        var xLabel = d3.select(".x-label"),
+            yLabel = d3.select(".y-label");
+
+        if (showAxes) {
+            translateAxis(xAxis, "translate(0," + (height - onScreenYOffset) + ")");
+            translateAxis(yAxis, "translate(" + onScreenXOffset + ",0)");
+            xLabel
+                .attr("x", width - 570)
+                .attr("y", height - 6)
+            yLabel
+                .attr("y", width - 1180)
+                .attr("x", height - 900)
+        } else {
+            translateAxis(xAxis, "translate(0," + (height + offScreenYOffset) + ")");
+            translateAxis(yAxis, "translate(" + offScreenXOffset + ",0)");
+            xLabel
+                .attr("x", width + 570)
+            yLabel
+                .attr("x", height + 900)
+        }
+
+        function createAxes() {
+             var numberOfTicksX = (sentimentExtent[1] - sentimentExtent[0])*10,
+                 numberOfTicksY = frequencyExtent[1]-frequencyExtent[0],
+                 tickFormatY = ".0s";
+                 tickFormatX = ".1f";
+
+            var xAxis = d3.axisBottom(frequencyScaleX)
+                .ticks(numberOfTicksX, tickFormatX);
+
+            svg.append("g")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(0," + (height + offScreenYOffset) + ")")
+                .call(xAxis)
+            svg.append("text")
+                .attr("class", "x-label")
+                .attr("text-anchor", "end")
+                .text("Sentiment Score");
+
+            var yAxis = d3.axisLeft(frequencyScaleY)
+                .ticks(numberOfTicksY, tickFormatY);
+            svg.append("g")
+                .attr("class", "y-axis")
+                .attr("transform", "translate(" + offScreenXOffset + ",0)")
+                .call(yAxis);
+
+            svg.append("text")
+                .attr("class", "y-label")
+                .attr("text-anchor", "end")
+                .attr("transform", "rotate(-90)")
+                .text("Frequency");
+        }
+
+        function translateAxis(axis, translation) {
+            axis
+                .transition()
+                .duration(500)
+                .attr("transform", translation);
+        }
+    }
 }
