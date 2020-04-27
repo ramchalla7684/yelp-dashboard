@@ -132,11 +132,12 @@ var colorCodes = {
     U: "#E2DF14"
 };
 
-
 class BubbleChart {
     constructor() {
         this.width = 1200;
         this.height = 600;
+
+        this.svg = null;
         this.circleSize = {
             min: 10,
             max: 80
@@ -148,8 +149,8 @@ class BubbleChart {
     createSVG() {
         this.svg = d3.select("#bubble-chart")
             .append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("width", this.width)
+            .attr("height", this.height);
     }
 
     update(data) {
@@ -169,39 +170,29 @@ class BubbleChart {
             .domain(frequencyExtent)
             .range([this.circleSize.min, this.circleSize.max]);
 
-        this.toggleSentimentKey(true);
+        this.toggleSentimentKey(sentiments, true);
         this.createCircles(data, circleRadiusScale);
         this.createForces(sentimentExtent, frequencyExtent);
         this.createForceSimulation(circleRadiusScale);
-        addGroupingListeners();
+        // addGroupingListeners();
     }
 
-    toggleSentimentKey(showSentimentKey) {
+    toggleSentimentKey(sentiments, showSentimentKey) {
         var keyElementWidth = 150,
             keyElementHeight = 30;
         var onScreenYOffset = keyElementHeight * 1.5,
             offScreenYOffset = 100;
 
-        if (d3.select(".sentiment-key").empty()) {
-            createSentimentKey();
-        }
-        var sentimentKey = d3.select(".sentiment-key");
 
-        if (showSentimentKey) {
-            translateSentimentKey("translate(0," + (height - onScreenYOffset) + ")");
-        } else {
-            translateSentimentKey("translate(0," + (height + offScreenYOffset) + ")");
-        }
-
-        function createSentimentKey() {
+        let createSentimentKey = () => {
             var keyWidth = keyElementWidth * sentiments.length;
             var sentimentKeyScale = d3.scaleBand()
                 .domain(sentiments)
-                .range([(width - keyWidth) / 2, (width + keyWidth) / 2]);
+                .range([(this.width - keyWidth) / 2, (this.width + keyWidth) / 2]);
 
-            svg.append("g")
+            this.svg.append("g")
                 .attr("class", "sentiment-key")
-                .attr("transform", "translate(0," + (height + offScreenYOffset) + ")")
+                .attr("transform", "translate(0," + (this.height + offScreenYOffset) + ")")
                 .selectAll("g")
                 .data(sentiments)
                 .enter()
@@ -245,6 +236,18 @@ class BubbleChart {
                 });
         }
 
+
+        if (d3.select(".sentiment-key").empty()) {
+            createSentimentKey();
+        }
+        var sentimentKey = d3.select(".sentiment-key");
+
+        if (showSentimentKey) {
+            translateSentimentKey("translate(0," + (this.height - onScreenYOffset) + ")");
+        } else {
+            translateSentimentKey("translate(0," + (this.height + offScreenYOffset) + ")");
+        }
+
         function translateSentimentKey(translation) {
             sentimentKey
                 .transition()
@@ -256,7 +259,7 @@ class BubbleChart {
 
     createCircles(data, circleRadiusScale) {
         var formatFrequency = d3.format(",");
-        this.circles = svg.selectAll("circle")
+        this.circles = this.svg.selectAll("circle")
             .data(data)
             .enter()
             .append("circle")
@@ -438,96 +441,96 @@ function frequencyGrouping() {
     return isChecked("#frequency");
 }
 
-function addGroupingListeners() {
-    addListener("#combine", forces.combine);
-    addListener("#sentiments", forces.sentiment);
-    addListener("#frequency", forces.frequency);
+// function addGroupingListeners() {
+//     addListener("#combine", forces.combine);
+//     addListener("#sentiments", forces.sentiment);
+//     addListener("#frequency", forces.frequency);
 
-    function addListener(selector, forces) {
-        d3.select(selector).on("click", function () {
-            updateForces(forces);
-            toggleSentimentKey(!frequencyGrouping());
-            toggleFrequencyAxes(frequencyGrouping());
-        });
-    }
+//     function addListener(selector, forces) {
+//         d3.select(selector).on("click", function () {
+//             updateForces(forces);
+//             toggleSentimentKey(!frequencyGrouping());
+//             toggleFrequencyAxes(frequencyGrouping());
+//         });
+//     }
 
-    function updateForces(forces) {
-        forceSimulation
-            .force("x", forces.x)
-            .force("y", forces.y)
-            .force("collide", d3.forceCollide(forceCollide))
-            .alphaTarget(0.5)
-            .restart();
-    }
+//     function updateForces(forces) {
+//         forceSimulation
+//             .force("x", forces.x)
+//             .force("y", forces.y)
+//             .force("collide", d3.forceCollide(forceCollide))
+//             .alphaTarget(0.5)
+//             .restart();
+//     }
 
-    function toggleFrequencyAxes(showAxes) {
-        var onScreenXOffset = 50,
-            offScreenXOffset = -40;
-        var onScreenYOffset = 50,
-            offScreenYOffset = 100;
+//     function toggleFrequencyAxes(showAxes) {
+//         var onScreenXOffset = 50,
+//             offScreenXOffset = -40;
+//         var onScreenYOffset = 50,
+//             offScreenYOffset = 100;
 
-        if (d3.select(".x-axis").empty()) {
-            createAxes();
-        }
-        var xAxis = d3.select(".x-axis"),
-            yAxis = d3.select(".y-axis");
-        var xLabel = d3.select(".x-label"),
-            yLabel = d3.select(".y-label");
+//         if (d3.select(".x-axis").empty()) {
+//             createAxes();
+//         }
+//         var xAxis = d3.select(".x-axis"),
+//             yAxis = d3.select(".y-axis");
+//         var xLabel = d3.select(".x-label"),
+//             yLabel = d3.select(".y-label");
 
-        if (showAxes) {
-            translateAxis(xAxis, "translate(0," + (height - onScreenYOffset) + ")");
-            translateAxis(yAxis, "translate(" + onScreenXOffset + ",0)");
-            xLabel
-                .attr("x", width - 570)
-                .attr("y", height - 6)
-            yLabel
-                .attr("y", width - 1180)
-                .attr("x", height - 900)
-        } else {
-            translateAxis(xAxis, "translate(0," + (height + offScreenYOffset) + ")");
-            translateAxis(yAxis, "translate(" + offScreenXOffset + ",0)");
-            xLabel
-                .attr("x", width + 570)
-            yLabel
-                .attr("x", height + 900)
-        }
+//         if (showAxes) {
+//             translateAxis(xAxis, "translate(0," + (height - onScreenYOffset) + ")");
+//             translateAxis(yAxis, "translate(" + onScreenXOffset + ",0)");
+//             xLabel
+//                 .attr("x", width - 570)
+//                 .attr("y", height - 6)
+//             yLabel
+//                 .attr("y", width - 1180)
+//                 .attr("x", height - 900)
+//         } else {
+//             translateAxis(xAxis, "translate(0," + (height + offScreenYOffset) + ")");
+//             translateAxis(yAxis, "translate(" + offScreenXOffset + ",0)");
+//             xLabel
+//                 .attr("x", width + 570)
+//             yLabel
+//                 .attr("x", height + 900)
+//         }
 
-        function createAxes() {
-            var numberOfTicks = 10,
-                tickFormatY = ".0s";
-            tickFormatX = ".1f";
+//         function createAxes() {
+//             var numberOfTicks = 10,
+//                 tickFormatY = ".0s";
+//             tickFormatX = ".1f";
 
-            var xAxis = d3.axisBottom(frequencyScaleX)
-                .ticks(numberOfTicks, tickFormatX);
+//             var xAxis = d3.axisBottom(frequencyScaleX)
+//                 .ticks(numberOfTicks, tickFormatX);
 
-            svg.append("g")
-                .attr("class", "x-axis")
-                .attr("transform", "translate(0," + (height + offScreenYOffset) + ")")
-                .call(xAxis)
-            svg.append("text")
-                .attr("class", "x-label")
-                .attr("text-anchor", "end")
-                .text("Sentiment Score");
+//             svg.append("g")
+//                 .attr("class", "x-axis")
+//                 .attr("transform", "translate(0," + (height + offScreenYOffset) + ")")
+//                 .call(xAxis)
+//             svg.append("text")
+//                 .attr("class", "x-label")
+//                 .attr("text-anchor", "end")
+//                 .text("Sentiment Score");
 
-            var yAxis = d3.axisLeft(frequencyScaleY)
-                .ticks(numberOfTicks, tickFormatY);
-            svg.append("g")
-                .attr("class", "y-axis")
-                .attr("transform", "translate(" + offScreenXOffset + ",0)")
-                .call(yAxis);
+//             var yAxis = d3.axisLeft(frequencyScaleY)
+//                 .ticks(numberOfTicks, tickFormatY);
+//             svg.append("g")
+//                 .attr("class", "y-axis")
+//                 .attr("transform", "translate(" + offScreenXOffset + ",0)")
+//                 .call(yAxis);
 
-            svg.append("text")
-                .attr("class", "y-label")
-                .attr("text-anchor", "end")
-                .attr("transform", "rotate(-90)")
-                .text("Frequency");
-        }
+//             svg.append("text")
+//                 .attr("class", "y-label")
+//                 .attr("text-anchor", "end")
+//                 .attr("transform", "rotate(-90)")
+//                 .text("Frequency");
+//         }
 
-        function translateAxis(axis, translation) {
-            axis
-                .transition()
-                .duration(500)
-                .attr("transform", translation);
-        }
-    }
-}
+//         function translateAxis(axis, translation) {
+//             axis
+//                 .transition()
+//                 .duration(500)
+//                 .attr("transform", translation);
+//         }
+//     }
+// }

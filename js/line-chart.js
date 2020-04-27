@@ -4,8 +4,8 @@ var margin = {
         bottom: 30,
         left: 50
     },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom,
+    width = 560 - margin.left - margin.right,
+    height = 200 - margin.top - margin.bottom,
     tooltip = {
         width: 100,
         height: 100,
