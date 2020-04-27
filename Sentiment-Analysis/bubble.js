@@ -119,7 +119,7 @@ var words = [{
         sentiment: "0.8",
         frequency: "1"
       }
-]
+];
 var sentimentNames = {P: "Positive", N: "Negative", U: "Neutral"};
 var colorCodes = {P: "steelblue", N: "#C70039", U: "#E2DF14"};
 
@@ -252,29 +252,34 @@ function isChecked(elementID) {
 
 function createCircles() {
   var formatFrequency = d3.format(",");
-  circles = svg.selectAll("circle")
+    // Draw circles and texts for the nodes
+  var nodes = svg.append("g")
+    .attr("class", "nodes");
+
+  node = nodes.selectAll("node")
     .data(data)
     .enter()
-      .append("circle")
-      .attr("r", function(d) { return circleRadiusScale(d.frequency); })
-      .on("mouseover", function(d) {
-        updateWordInfo(d);
-      })
-      .on("mouseout", function(d) {
-        updateWordInfo();
-      });
+    .append("g");
 
-  circles.data(data).enter().append("text")
-      .attr("dy", ".2em")
-      .style("text-anchor", "middle")
-      .text(function(d) {
-          return d.data.phrase.substring(0, d.r / 3);
-      })
-      .attr("font-family", "sans-serif")
-      .attr("font-size", function(d){
-          return d.r/5;
-      })
-      .attr("fill", "white");
+  var circle = node.append("circle")
+    .attr("r", function(d) { return circleRadiusScale(d.frequency); })
+    .on("mouseover", function(d) {
+      updateWordInfo(d);
+    })
+    .on("mouseout", function(d) {
+      updateWordInfo();
+    });
+
+  var text = node.append("text")
+    .text(function(d) {
+              return d.phrase; })
+    .attr("y", 0)
+    .attr("text-anchor", "middle")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", function(d){
+        return d.frequency*3; })
+    .attr("fill", "black");
+
   updateCircles();
 
   function updateWordInfo(word) {
@@ -287,7 +292,7 @@ function createCircles() {
 }
 
 function updateCircles() {
-  circles
+  node
     .attr("fill", function(d) {
       if (d["sentiment"] > 0.1) {
         return colorCodes["P"] ;
@@ -378,9 +383,13 @@ function createForceSimulation() {
     .force("collide", d3.forceCollide(forceCollide));
   forceSimulation.nodes(data)
     .on("tick", function() {
-      circles
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
+    //   circles
+    //     .attr("cx", function(d) { return d.x; })
+    //     .attr("cy", function(d) { return d.y; });
+    // });
+    node.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")"
+      });
     });
 }
 
