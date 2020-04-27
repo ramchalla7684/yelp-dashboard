@@ -1,3 +1,8 @@
+function showBusinessName(business) {
+    businessNameEl.textContent = business.name;
+    businessAddressEl.textContent = business.address;
+}
+
 function showDataPicker1(availableDates) {
     datePicker1.innerHTML = '';
 

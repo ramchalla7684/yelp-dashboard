@@ -1,11 +1,15 @@
 let map,
     markers = [];
 let businessCategoriesEl,
+    businessNameEl,
+    businessAddressEl,
     datePicker1;
 
 function onDOMLoaded() {
-    businessCategoriesEl = document.getElementById('business-categories');
+    businessCategoriesEl = document.querySelector('#business-categories');
     datePicker1 = document.querySelector('#date-picker-1 ul');
+    businessNameEl = document.querySelector('#business-name');
+    businessAddressEl = document.querySelector('#business-address span');
 
     loadBusinessCategories();
 }
@@ -52,6 +56,7 @@ async function loadBusinessDetails(businessID) {
 }
 
 async function reloadDashboard(business) {
+    showBusinessName(business);
     showDataPicker1(business.available_dates);
     // showRatingsPlot();
     // showTopicsPlot();
