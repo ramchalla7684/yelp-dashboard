@@ -18,7 +18,7 @@ class LineChart {
 
         this.parseDate = d3.timeParse("%m/%e/%Y");
         this.bisectDate = d3.bisector(function (d) {
-            return d.date;
+            return d.month;
         }).left;
 
         this.formatValue = d3.format(",");
@@ -54,19 +54,23 @@ class LineChart {
 
     init() {
 
-        this.x = d3.scaleTime()
-            .range([0, this.width]);
+        this.x = d3.scaleOrdinal()
+            .range([...Array.from(Array(12).keys()).map(i => i * this.width / 11)]);
         this.y = d3.scaleLinear()
             .range([this.height, 0]);
 
 
-        this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
+        this.x = this.x.domain([...MONTHS]);
         this.y = this.y.domain([1, 5]);
+
+        console.log(this.x("Feb"));
+        console.log(this.x("Jan"));
+        console.log(this.x("Apr"));
 
         this.line = d3.line()
             .x((d) => {
-                console.log(this.x(d.date));
-                return this.x(d.date);
+                // console.log(this.x(d.month));
+                return this.x(d.month);
             })
             .y((d) => {
                 return this.y(d.stars);
@@ -105,8 +109,8 @@ class LineChart {
                     .enter().append("circle") // Uses the enter().append() method
                     .attr("class", "dot")
                     .attr("cx", (d, i) => {
-                        // console.log(this.x(d.date));
-                        return this.x(d.date)
+                        // console.log(this.x(d.month));
+                        return this.x(d.month)
                     })
                     .attr("cy", (d) => {
                         console.log(this.y(d.stars));
@@ -163,8 +167,8 @@ class LineChart {
     }
 
     update() {
-        this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
-        this.y = this.y.domain([1, 5]);
+        // this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
+        // this.y = this.y.domain([1, 5]);
         this.svg.select(".x-axis").remove();
 
         this.svg.select(".y-axis").remove();
@@ -200,7 +204,7 @@ class LineChart {
                     .enter().append("circle") // Uses the enter().append() method
                     .attr("class", "dot")
                     .attr("cx", (d, i) => {
-                        return this.x(d.date)
+                        return this.x(d.month)
                     })
                     .attr("cy", (d) => {
                         return this.y(d.stars)
@@ -217,8 +221,8 @@ class LineChart {
             d0 = self.currentData[i - 1],
             d1 = self.currentData[i],
             d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-        self.focus.attr("transform", "translate(" + self.x(d.date) + "," + self.y(d.stars) + ")");
-        self.focus.select(".tooltip-date").text(self.dateFormatter(d.date));
+        self.focus.attr("transform", "translate(" + self.x(d.month) + "," + self.y(d.stars) + ")");
+        self.focus.select(".tooltip-date").text(self.dateFormatter(d.month));
         self.focus.select(".tooltip-stars").text(self.formatValue(d.stars));
     }
 
@@ -343,8 +347,8 @@ var all_data = [{
 
 // currentData = JSON.parse(JSON.stringify(all_data[0].data));
 // currentData.forEach(function (d) {
-//     d.date = lineChart.parseDate(d.date);
-//     // console.log(d.date);
+//     d.month = lineChart.parseDate(d.month);
+//     // console.log(d.month);
 //     d.likes = +d.likes;
 // });
 
@@ -353,9 +357,9 @@ var all_data = [{
 
 
 // currentData.forEach(function (d) {
-//     // console.log("date: " + d.date)
+//     // console.log("date: " + d.month)
 //     // console.log("likes: " + d.likes + " : " + typeof d.likes)
-//     d.date = lineChart.parseDate(d.date);
+//     d.month = lineChart.parseDate(d.month);
 //     d.likes = +d.likes;
 // });
 

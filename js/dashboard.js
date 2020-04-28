@@ -1,6 +1,7 @@
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-let lineChart;
+let lineChart,
+    barChart;
 
 function showBusinessName(business) {
     businessNameEl.textContent = business.name;
@@ -21,6 +22,7 @@ function showDataPicker1(business) {
             li.classList.add('active');
 
             showLineChart(business, year);
+            showBarChart(business, year);
         });
 
         datePickerEl.appendChild(li);
@@ -50,7 +52,7 @@ function showLineChart(business, year) {
 
         if (!(i in business.ratings[year])) {
             ratings.push({
-                date: MONTHS[i],
+                month: MONTHS[i],
                 stars: 0,
                 num: 0
             });
@@ -61,13 +63,13 @@ function showLineChart(business, year) {
             } = avgStars(business.ratings[year][i].stars);
 
             ratings.push({
-                date: MONTHS[i],
+                month: MONTHS[i],
                 stars: avg,
                 num: num
             });
         }
     }
-    console.log(ratings);
+    // console.log(ratings);
 
     if (!lineChart) {
         lineChart = new LineChart();
@@ -76,14 +78,40 @@ function showLineChart(business, year) {
         lineChart.init();
     } else {
         lineChart.currentData = ratings;
-        lineChart.init();
+        lineChart.update();
     }
 }
 
+function showBarChart(business, year) {
 
-// currentData = JSON.parse(JSON.stringify(all_data[0].data));
-// currentData.forEach(function (d) {
-//     d.date = lineChart.parseDate(d.date);
-//     // console.log(d.date);
-//     d.likes = +d.likes;
-// });
+    if (!(year in business.checkins)) {
+        return;
+    }
+
+    let checkins = [];
+
+    for (let i = 0; i < 12; i++) {
+
+        if (!(i in business.checkins[year])) {
+            checkins.push({
+                month: MONTHS[i],
+                checkins: 0
+            });
+        } else {
+            checkins.push({
+                month: MONTHS[i],
+                checkins: business.checkins[year][i]
+            });
+        }
+    }
+
+    if (!barChart) {
+        barChart = new BarChart();
+        barChart.createSVG();
+        barChart.currentData = checkins;
+        barChart.init();
+    } else {
+        barChart.currentData = checkins;
+        barChart.update();
+    }
+}

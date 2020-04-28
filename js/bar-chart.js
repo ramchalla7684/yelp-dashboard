@@ -9,23 +9,22 @@ class BarChart {
         this.width = 800 - this.margin.left - this.margin.right;
         this.height = 450 - this.margin.top - this.margin.bottom;
 
-        this.opacity = d3.scaleLinear()
-            .domain([0, 300])
-            .range([0.2, 1.0]);
-
         this.tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
         this.svg = null;
 
         this.x = null;
         this.y = null;
+        this.opacity = null;
 
         this.data = null;
+        this.yMax = null;
     }
 
 
     set currentData(data) {
         this.data = data;
+        this.yMax = Math.max(...this.data.map(d => d.checkins)) + 50;
     }
 
     get currentData() {
@@ -52,8 +51,12 @@ class BarChart {
             .padding(0.3);
 
         this.y = d3.scaleLinear()
-            .domain([0, 300])
+            .domain([0, this.yMax])
             .range([this.height, 0]);
+
+        this.opacity = d3.scaleLinear()
+            .domain([0, this.yMax])
+            .range([0.2, 1.0]);
 
 
         this.svg.append("g")
@@ -92,7 +95,7 @@ class BarChart {
                 return 0;
             })
             .attr("opacity", (d) => {
-                return this.opacity(d.checkin)
+                return this.opacity(d.checkins)
             })
             .on("mousemove", function () {
                 let del = 5;
@@ -107,7 +110,7 @@ class BarChart {
                 //     .style("left", d3.event.pageX + "px")
                 //     .style("top", d3.event.pageY - 30 + "px")
                 //     .style("display", "inline-block")
-                //     .html((d.checkin));
+                //     .html((d.checkins));
             })
             .on("mouseout", function () {
                 d3.select(this)
@@ -121,22 +124,22 @@ class BarChart {
 
         bars.append('text')
             .attr('x', barWidth / 2)
-            .attr('y', d => this.y(d.checkin) + 10)
+            .attr('y', d => this.y(d.checkins) + 10)
             .attr("dy", "1em")
             .attr('font-size', '0.8em')
             .attr("text-anchor", "middle")
             .attr('fill', 'white')
-            .text(d => d.checkin);
+            .text(d => d.checkins);
 
         // Animation
         this.svg.selectAll("rect")
             .transition()
             .duration(800)
             .attr("y", (d) => {
-                return this.y(d.checkin);
+                return this.y(d.checkins);
             })
             .attr("height", (d) => {
-                return this.height - this.y(d.checkin);
+                return this.height - this.y(d.checkins);
             })
             .delay(function (d, i) {
                 return (i * 80)
@@ -148,112 +151,106 @@ class BarChart {
     }
 }
 
-
-let barChart = new BarChart();
-barChart.createSVG();
-
 data = [{
         "month": "Jan",
-        "checkin": 100
+        "checkins": 100
     },
     {
         "month": "Feb",
-        "checkin": 30
+        "checkins": 30
     },
     {
         "month": "March",
-        "checkin": 180
+        "checkins": 180
     },
     {
         "month": "April",
-        "checkin": 200
+        "checkins": 200
     },
     {
         "month": "May",
-        "checkin": 70
+        "checkins": 70
     },
     {
         "month": "Jun",
-        "checkin": 60
+        "checkins": 60
     },
     {
         "month": "Jul",
-        "checkin": 250
+        "checkins": 250
     },
     {
         "month": "Aug",
-        "checkin": 123
+        "checkins": 123
     },
     {
         "month": "Sept",
-        "checkin": 180
+        "checkins": 180
     },
     {
         "month": "Oct",
-        "checkin": 156
+        "checkins": 156
     },
     {
         "month": "Nov",
-        "checkin": 175
+        "checkins": 175
     },
     {
         "month": "Dec",
-        "checkin": 232
+        "checkins": 232
     }
 ];
 
 var d2 = [{
         "month": "Jan",
-        "checkin": 100
+        "checkins": 100
     },
     {
         "month": "Feb",
-        "checkin": 30
+        "checkins": 30
     },
     {
         "month": "March",
-        "checkin": 43
+        "checkins": 43
     },
     {
         "month": "April",
-        "checkin": 212
+        "checkins": 212
     },
     {
         "month": "May",
-        "checkin": 122
+        "checkins": 122
     },
     {
         "month": "Jun",
-        "checkin": 60
+        "checkins": 60
     },
     {
         "month": "Jul",
-        "checkin": 250
+        "checkins": 250
     },
     {
         "month": "Aug",
-        "checkin": 32
+        "checkins": 32
     },
     {
         "month": "Sept",
-        "checkin": 180
+        "checkins": 180
     },
     {
         "month": "Oct",
-        "checkin": 156
+        "checkins": 156
     },
     {
         "month": "Nov",
-        "checkin": 175
+        "checkins": 175
     },
     {
         "month": "Dec",
-        "checkin": 212
+        "checkins": 212
     }
 ];
 
-barChart.currentData = data;
-barChart.init();
 
 function update(data, y) {
 
@@ -262,13 +259,13 @@ function update(data, y) {
         .transition()
         .duration(800)
         .attr("y", function (d) {
-            return y(d.checkin);
+            return y(d.checkins);
         })
         .attr("height", function (d) {
-            return height - y(d.checkin);
+            return height - y(d.checkins);
         })
         .attr("opacity", function (d) {
-            return opacity(d.checkin)
+            return opacity(d.checkins)
         })
         .delay(function (d, i) {
             return (i * 80)
