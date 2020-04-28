@@ -16,7 +16,7 @@
 }
 
 header {
-    height: 60px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,7 +32,7 @@ header .title {
 
 main {
     width: 100%;
-    height: calc(100% - 60px);
+    height: calc(100% - 40px);
     background-color: white;
     border-radius: 18px;
     display: flex;
@@ -106,7 +106,7 @@ section.viz {
 
 section.viz .business-id {
     font-family: 'Noto Sans SC', sans-serif;
-    margin: 0 20px 50px 20px;
+    margin: 0 20px 40px 20px;
 }
 
 section.viz .business-id .business-name {
@@ -117,7 +117,7 @@ section.viz .business-id .business-name {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 }
 
 .date-picker p {
@@ -153,4 +153,9 @@ section.viz .business-id .business-name {
 
 .viz-ratings .line-chart {
     margin-right: 20px;
+}
+
+
+.bubble-chart {
+    position: relative;
 }

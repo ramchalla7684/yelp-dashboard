@@ -7,8 +7,8 @@ class LineChart {
             left: 30
         };
 
-        this.width = 560 - this.margin.left - this.margin.right;
-        this.height = 350 - this.margin.top - this.margin.bottom;
+        this.width = 500 - this.margin.left - this.margin.right;
+        this.height = 300 - this.margin.top - this.margin.bottom;
         this.tooltip = {
             width: 100,
             height: 100,
@@ -75,13 +75,13 @@ class LineChart {
             });
 
         this.svg.append("g")
-            .attr("class", "x-axis")
+            .attr("class", "line-chart-x-axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(this.x));
 
 
         this.svg.append("g")
-            .attr("class", "y-axis")
+            .attr("class", "line-chart-y-axis")
             .call(d3.axisLeft(this.y));
 
 
@@ -175,19 +175,18 @@ class LineChart {
     update() {
         // this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
         // this.y = this.y.domain([1, 5]);
-        this.svg.select(".x-axis").remove();
-
-        this.svg.select(".y-axis").remove();
+        this.svg.select(".line-chart-x-axis").remove();
+        this.svg.select(".line-chart-y-axis").remove();
         this.svg.selectAll(".dot").remove();
 
         this.svg.append("g")
-            .attr("class", "x-axis")
+            .attr("class", "line-chart-x-axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(this.x));
 
 
         this.svg.append("g")
-            .attr("class", "y-axis")
+            .attr("class", "line-chart-y-axis")
             .call(d3.axisLeft(this.y));
 
 
@@ -215,7 +214,7 @@ class LineChart {
                     .attr("cy", (d) => {
                         return this.y(d.stars)
                     })
-                    .attr("r", 5);
+                    .attr("r", 6);
             })
             .attr("stroke-dashoffset", 0);
 
@@ -238,145 +237,3 @@ class LineChart {
 
 
 }
-
-var all_data = [{
-        'name': 'daily',
-        'data': [{
-                "date": "1/1/2015",
-                "likes": "1"
-            },
-            {
-                "date": "1/2/2015",
-                "likes": "1.5"
-            },
-            {
-                "date": "1/3/2015",
-                "likes": "1.7"
-            },
-            {
-                "date": "1/4/2015",
-                "likes": "1.8"
-            },
-            {
-                "date": "1/5/2015",
-                "likes": "2.0"
-            },
-            {
-                "date": "1/6/2015",
-                "likes": "2.5"
-            },
-
-
-            {
-                "date": "2/1/2015",
-                "likes": "3.4"
-            },
-            {
-                "date": "2/10/2015",
-                "likes": "3.7"
-            },
-            {
-                "date": "2/11/2015",
-                "likes": "4.0"
-            },
-            {
-                "date": "3/12/2015",
-                "likes": "4.2"
-            },
-            {
-                "date": "3/13/2015",
-                "likes": "4.4"
-            },
-            {
-                "date": "3/14/2015",
-                "likes": "4.3"
-            },
-            {
-                "date": "3/15/2015",
-                "likes": "4.8"
-            },
-            {
-                "date": "3/16/2015",
-                "likes": "4.9"
-            }
-        ]
-    },
-    {
-        'name': 'weekly',
-        'data': [{
-                "date": "10/1/2015",
-                "likes": "3"
-            },
-            {
-                "date": "10/7/2015",
-                "likes": "4"
-            },
-            {
-                "date": "10/14/2015",
-                "likes": "1.7"
-            },
-            {
-                "date": "10/21/2015",
-                "likes": "2.8"
-            },
-            {
-                "date": "11/7/2015",
-                "likes": "4"
-            },
-            {
-                "date": "11/14/2015",
-                "likes": "1.7"
-            },
-            {
-                "date": "11/21/2015",
-                "likes": "2.8"
-            }
-        ]
-    },
-    {
-        'name': 'monthly',
-        'data': [{
-                "date": "1/1/2015",
-                "likes": "4"
-            },
-            {
-                "date": "2/1/2015",
-                "likes": "1.7"
-            },
-            {
-                "date": "3/1/2015",
-                "likes": "2.8"
-            }
-        ]
-    }
-];
-
-
-// let lineChart = new LineChart();
-// lineChart.createSVG();
-
-// currentData = JSON.parse(JSON.stringify(all_data[0].data));
-// currentData.forEach(function (d) {
-//     d.month = lineChart.parseDate(d.month);
-//     // console.log(d.month);
-//     d.likes = +d.likes;
-// });
-
-// lineChart.currentData = currentData;
-// lineChart.init();
-
-
-// currentData.forEach(function (d) {
-//     // console.log("date: " + d.month)
-//     // console.log("likes: " + d.likes + " : " + typeof d.likes)
-//     d.month = lineChart.parseDate(d.month);
-//     d.likes = +d.likes;
-// });
-
-// lineChart.currentData = currentData;
-// lineChart.update();
-
-
-
-// D3 provides lots of transition options, have a play around here:
-// https://github.com/d3/d3-transition

@@ -1,125 +1,3 @@
-//dummy data
-var words = [{
-        rating: "1",
-        keyword: "mac cheese",
-        sentiment: "0.8",
-        frequency: 10
-    },
-    {
-        rating: "1",
-        keyword: "gabi good",
-        sentiment: "0.5",
-        frequency: "5"
-    },
-    {
-        rating: "1",
-        keyword: "steak knife",
-        sentiment: "0.1",
-        frequency: "3"
-    },
-    {
-        rating: "1",
-        keyword: "service",
-        sentiment: "-0.8",
-        frequency: "1"
-    },
-    {
-        rating: "2",
-        keyword: "washroom",
-        sentiment: "0.7",
-        frequency: "10"
-    },
-    {
-        rating: "2",
-        keyword: "dirty",
-        sentiment: "-0.5",
-        frequency: "5"
-    },
-    {
-        rating: "2",
-        keyword: "clean",
-        sentiment: "0.1",
-        frequency: "3"
-    },
-    {
-        rating: "2",
-        keyword: "tasty",
-        sentiment: "0.8",
-        frequency: "1"
-    },
-    {
-        rating: "3",
-        keyword: "mushroom",
-        sentiment: "-0.7",
-        frequency: "10"
-    },
-    {
-        rating: "3",
-        keyword: "not good",
-        sentiment: "-0.5",
-        frequency: "5"
-    },
-    {
-        rating: "3",
-        keyword: "DBC",
-        sentiment: "0.1",
-        frequency: "3"
-    },
-    {
-        rating: "3",
-        keyword: "yummy",
-        sentiment: "0.8",
-        frequency: "1"
-    },
-    {
-        rating: "4",
-        keyword: "best steak",
-        sentiment: "0.7",
-        frequency: "10"
-    },
-    {
-        rating: "4",
-        keyword: "great view",
-        sentiment: "0.5",
-        frequency: "5"
-    },
-    {
-        rating: "4",
-        keyword: "creme brule",
-        sentiment: "0.1",
-        frequency: "3"
-    },
-    {
-        rating: "4",
-        keyword: "waiter",
-        sentiment: "-0.2",
-        frequency: "1"
-    },
-    {
-        rating: "5",
-        keyword: "wine list",
-        sentiment: "0.9",
-        frequency: "10"
-    },
-    {
-        rating: "5",
-        keyword: "dinner",
-        sentiment: "0.5",
-        frequency: "5"
-    },
-    {
-        rating: "5",
-        keyword: "food",
-        sentiment: "0.1",
-        frequency: "3"
-    },
-    {
-        rating: "5",
-        keyword: "fondue",
-        sentiment: "0.8",
-        frequency: "1"
-    }
-]
 var sentimentNames = {
     P: "Positive",
     N: "Negative",
@@ -176,7 +54,7 @@ class BubbleChart {
         let sentimentExtent = d3.extent(sentiment_scores);
         let sentiments = Object.keys(sentimentNames);
 
-        this.circleRadiusScale = d3.scaleSqrt()
+        this.circleRadiusScale = d3.scaleLog()
             .domain(frequencyExtent)
             .range([this.circleSize.min, this.circleSize.max]);
 
@@ -299,7 +177,7 @@ class BubbleChart {
 
         var text = this.node.append("text")
             .text(function (d) {
-                if (d.frequency * 2 < 8) {
+                if (d.frequency * 2.5 < 8) {
                     return "";
                 }
                 return d.keyword;
@@ -308,7 +186,7 @@ class BubbleChart {
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
             .attr("font-size", function (d) {
-                return Math.min(d.frequency * 2, 13);
+                return Math.min(d.frequency * 2.5, 13);
             })
             .attr("fill", "black");
 
@@ -534,18 +412,6 @@ class BubbleChart {
     }
 }
 
-// default rating
-// let data = words.filter(function (d) {
-//     return true
-// });
-
-// console.log(data);
-
-// bubbleChart = new BubbleChart();
-// bubbleChart.createSVG();
-// bubbleChart.update(data, true);
-
-
 $('.star').addClass('selected');
 for (var i = 0; i < 5 - 1; i++) {
     $('.star').eq(i).removeClass('selected');
@@ -571,99 +437,4 @@ function isChecked(elementID) {
 
 function frequencyGrouping() {
     return isChecked("#frequency");
-}
-
-function addGroupingListeners() {
-    addListener("#combine", forces.combine);
-    addListener("#sentiments", forces.sentiment);
-    addListener("#frequency", forces.frequency);
-
-    function addListener(selector, forces) {
-        d3.select(selector).on("click", function () {
-            updateForces(forces);
-            toggleSentimentKey(!frequencyGrouping());
-            toggleFrequencyAxes(frequencyGrouping());
-        });
-    }
-
-    function updateForces(forces) {
-        forceSimulation
-            .force("x", forces.x)
-            .force("y", forces.y)
-            .force("collide", d3.forceCollide(forceCollide))
-            .alphaTarget(0.5)
-            .restart();
-    }
-
-    function toggleFrequencyAxes(showAxes) {
-        var onScreenXOffset = 50,
-            offScreenXOffset = -40;
-        var onScreenYOffset = 50,
-            offScreenYOffset = 100;
-
-        if (d3.select(".x-axis").empty()) {
-            createAxes();
-        }
-        var xAxis = d3.select(".x-axis"),
-            yAxis = d3.select(".y-axis");
-        var xLabel = d3.select(".x-label"),
-            yLabel = d3.select(".y-label");
-
-        if (showAxes) {
-            translateAxis(xAxis, "translate(0," + (height - onScreenYOffset) + ")");
-            translateAxis(yAxis, "translate(" + onScreenXOffset + ",0)");
-            xLabel
-                .attr("x", width - 570)
-                .attr("y", height - 6)
-            yLabel
-                .attr("y", width - 1180)
-                .attr("x", height - 900)
-        } else {
-            translateAxis(xAxis, "translate(0," + (height + offScreenYOffset) + ")");
-            translateAxis(yAxis, "translate(" + offScreenXOffset + ",0)");
-            xLabel
-                .attr("x", width + 570)
-            yLabel
-                .attr("x", height + 900)
-        }
-
-        function createAxes() {
-            var numberOfTicksX = (sentimentExtent[1] - sentimentExtent[0]) * 10,
-                numberOfTicksY = frequencyExtent[1] - frequencyExtent[0],
-                tickFormatY = ".0s";
-            tickFormatX = ".1f";
-
-            var xAxis = d3.axisBottom(frequencyScaleX)
-                .ticks(numberOfTicksX, tickFormatX);
-
-            svg.append("g")
-                .attr("class", "x-axis")
-                .attr("transform", "translate(0," + (height + offScreenYOffset) + ")")
-                .call(xAxis)
-            svg.append("text")
-                .attr("class", "x-label")
-                .attr("text-anchor", "end")
-                .text("Sentiment Score");
-
-            var yAxis = d3.axisLeft(frequencyScaleY)
-                .ticks(numberOfTicksY, tickFormatY);
-            svg.append("g")
-                .attr("class", "y-axis")
-                .attr("transform", "translate(" + offScreenXOffset + ",0)")
-                .call(yAxis);
-
-            svg.append("text")
-                .attr("class", "y-label")
-                .attr("text-anchor", "end")
-                .attr("transform", "rotate(-90)")
-                .text("Frequency");
-        }
-
-        function translateAxis(axis, translation) {
-            axis
-                .transition()
-                .duration(500)
-                .attr("transform", translation);
-        }
-    }
 }

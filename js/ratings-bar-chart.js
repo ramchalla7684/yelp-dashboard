@@ -7,7 +7,7 @@ class RatingsBarChart {
             left: 50
         };
         this.width = 460 - this.margin.left - this.margin.right;
-        this.height = 350 - this.margin.top - this.margin.bottom;
+        this.height = 300 - this.margin.top - this.margin.bottom;
 
         this.tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
@@ -213,52 +213,3 @@ class RatingsBarChart {
         console.log(stars);
     }
 }
-
-data = [{
-        "stars": "1",
-        "num": 100
-    },
-    {
-        "stars": "2",
-        "num": 30
-    },
-    {
-        "stars": "3",
-        "num": 180
-    },
-    {
-        "stars": "4",
-        "num": 200
-    },
-    {
-        "stars": "5",
-        "num": 70
-    }
-];
-
-var d2 = [{
-        "stars": "1",
-        "num": 100
-    },
-    {
-        "stars": "2",
-        "num": 30
-    },
-    {
-        "stars": "3",
-        "num": 43
-    },
-    {
-        "stars": "4",
-        "num": 212
-    },
-    {
-        "stars": "5",
-        "num": 122
-    }
-];
-
-// setTimeout(() => {
-//     ratingsBarChart.currentData = d2;
-//     ratingsBarChart.update();
-// }, 2000);
