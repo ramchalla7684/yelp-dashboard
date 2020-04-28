@@ -135,7 +135,7 @@ for (var i = 0; i < 5 - 1; i++) {
 width = 1200,
 height = 600;
 createSVG();
-update_data(data);
+update_data(data, true);
 
 //function to update rating
 $('.star').on('click', function () {
@@ -147,12 +147,12 @@ $('.star').on('click', function () {
   data = words.filter(function (d) {
     return (d.rating == 6 - count);
     }); 
-  update_data(data);
+  update_data(data, false);
 
 });
 
 //function to update data based on rating
-function update_data(data) {
+function update_data(data, firstTime) {
   d3.selectAll("svg > *").remove();
   frequencies = data.map(function(word) { return +word.frequency; });
   frequencyExtent = d3.extent(frequencies);
@@ -166,6 +166,10 @@ function update_data(data) {
   document.getElementById("combine").checked = false;
   document.getElementById("sentiments").checked = false;
   document.getElementById("frequency").checked = false;
+
+  if (!firstTime) {
+    forceSimulation.stop();
+  }
 
   toggleSentimentKey(true);
   createCircles();
@@ -259,7 +263,7 @@ function isChecked(elementID) {
 
 function createCircles() {
   var formatFrequency = d3.format(",");
-    // Draw circles and texts for the nodes
+  // Draw circles and texts for the nodes
   var nodes = svg.append("g")
     .attr("class", "nodes");
 
@@ -317,8 +321,8 @@ function createForces() {
   var forceStrength = 0.08;
 
   forces = {
-    combine:        createCombineForces(),
-    sentiment:      createSentimentForces(),
+    combine:       createCombineForces(),
+    sentiment:     createSentimentForces(),
     frequency:     createFrequencyForces()
   };
 
@@ -388,6 +392,7 @@ function createForceSimulation() {
     .force("x", forces.combine.x)
     .force("y", forces.combine.y)
     .force("collide", d3.forceCollide(forceCollide));
+
   forceSimulation.nodes(data)
     .on("tick", function() {
     //   circles
