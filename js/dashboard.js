@@ -2,7 +2,8 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 let lineChart,
     checkinsBarChart,
-    ratingsBarChart;
+    ratingsBarChart,
+    bubbleChart;
 
 function showBusinessName(business) {
     businessNameEl.textContent = business.name;
@@ -87,6 +88,74 @@ function showLineChart(business, year) {
 
 function showBubbleChart(business, year) {
 
+    console.log(business.keywords);
+    let _keywords = {};
+    for (let month in business.keywords[year]) {
+        for (let keyword in business.keywords[year][month].keywords) {
+            if (!_keywords[keyword]) {
+                _keywords[keyword] = [];
+            }
+
+            _keywords[keyword] = _keywords[keyword].concat(business.keywords[year][month].keywords[keyword]);
+        }
+    }
+
+    let countSentiment = (sentiments) => {
+        let p = 0,
+            n = 0,
+            u = 0;
+        for (let score of sentiments) {
+            if (score > 0.2) {
+                p += 1;
+            } else if (score < 0) {
+                n += 1;
+            } else {
+                u += 1;
+            }
+        }
+
+        return {
+            'nPositive': p,
+            'nNegative': n,
+            'nNeutral': u
+        };
+    }
+
+    let sentimentScores = [];
+    for (let keyword in _keywords) {
+        let {
+            nPositive,
+            nNegative,
+            nNeutral
+        } = countSentiment(_keywords[keyword]);
+        let nMentions = _keywords[keyword].length;
+        sentimentScores.push({
+            'keyword': keyword,
+            'sentiment': (_keywords[keyword].reduce((a, b) => a + b) / Math.max(nMentions, 1)).toFixed(4),
+            'frequency': nMentions,
+            'n_mentions': nMentions,
+            'n_positive': nPositive,
+            'n_negative': nNegative,
+            'n_neutral': nNeutral
+        });
+    }
+
+    console.log(sentimentScores.length);
+
+    let frequencyThreshold = 1;
+    sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['n_mentions'] > frequencyThreshold);
+
+    // sentimentScores = sentimentScores.splice(0, 30);
+    console.log(sentimentScores);
+
+
+    if (!bubbleChart) {
+        bubbleChart = new BubbleChart();
+        bubbleChart.createSVG();
+        bubbleChart.update(sentimentScores, true);
+    } else {
+        bubbleChart.update(sentimentScores, false);
+    }
 }
 
 function showCheckinsBarChart(business, year) {

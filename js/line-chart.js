@@ -63,11 +63,7 @@ class LineChart {
 
 
         this.x = this.x.domain([...MONTHS]);
-        this.y = this.y.domain([1, 5]);
-
-        console.log(this.x("Feb"));
-        console.log(this.x("Jan"));
-        console.log(this.x("Apr"));
+        this.y = this.y.domain([0, 5]);
 
         this.line = d3.line()
             .x((d) => {

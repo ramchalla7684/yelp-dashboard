@@ -1,121 +1,121 @@
 //dummy data
 var words = [{
         rating: "1",
-        phrase: "mac cheese",
+        keyword: "mac cheese",
         sentiment: "0.8",
-        frequency: "10"
+        frequency: 10
     },
     {
         rating: "1",
-        phrase: "gabi good",
+        keyword: "gabi good",
         sentiment: "0.5",
         frequency: "5"
     },
     {
         rating: "1",
-        phrase: "steak knife",
+        keyword: "steak knife",
         sentiment: "0.1",
         frequency: "3"
     },
     {
         rating: "1",
-        phrase: "service",
+        keyword: "service",
         sentiment: "-0.8",
         frequency: "1"
     },
     {
         rating: "2",
-        phrase: "washroom",
+        keyword: "washroom",
         sentiment: "0.7",
         frequency: "10"
     },
     {
         rating: "2",
-        phrase: "dirty",
+        keyword: "dirty",
         sentiment: "-0.5",
         frequency: "5"
     },
     {
         rating: "2",
-        phrase: "clean",
+        keyword: "clean",
         sentiment: "0.1",
         frequency: "3"
     },
     {
         rating: "2",
-        phrase: "tasty",
+        keyword: "tasty",
         sentiment: "0.8",
         frequency: "1"
     },
     {
         rating: "3",
-        phrase: "mushroom",
+        keyword: "mushroom",
         sentiment: "-0.7",
         frequency: "10"
     },
     {
         rating: "3",
-        phrase: "not good",
+        keyword: "not good",
         sentiment: "-0.5",
         frequency: "5"
     },
     {
         rating: "3",
-        phrase: "DBC",
+        keyword: "DBC",
         sentiment: "0.1",
         frequency: "3"
     },
     {
         rating: "3",
-        phrase: "yummy",
+        keyword: "yummy",
         sentiment: "0.8",
         frequency: "1"
     },
     {
         rating: "4",
-        phrase: "best steak",
+        keyword: "best steak",
         sentiment: "0.7",
         frequency: "10"
     },
     {
         rating: "4",
-        phrase: "great view",
+        keyword: "great view",
         sentiment: "0.5",
         frequency: "5"
     },
     {
         rating: "4",
-        phrase: "creme brule",
+        keyword: "creme brule",
         sentiment: "0.1",
         frequency: "3"
     },
     {
         rating: "4",
-        phrase: "waiter",
+        keyword: "waiter",
         sentiment: "-0.2",
         frequency: "1"
     },
     {
         rating: "5",
-        phrase: "wine list",
+        keyword: "wine list",
         sentiment: "0.9",
         frequency: "10"
     },
     {
         rating: "5",
-        phrase: "dinner",
+        keyword: "dinner",
         sentiment: "0.5",
         frequency: "5"
     },
     {
         rating: "5",
-        phrase: "food",
+        keyword: "food",
         sentiment: "0.1",
         frequency: "3"
     },
     {
         rating: "5",
-        phrase: "fondue",
+        keyword: "fondue",
         sentiment: "0.8",
         frequency: "1"
     }
@@ -140,12 +140,12 @@ class BubbleChart {
             bottom: 30,
             left: 30
         };
-        this.width = 1000 - this.margin.left - this.margin.right;
+        this.width = 1100 - this.margin.left - this.margin.right;
         this.height = 600 - this.margin.top - this.margin.bottom;
         this.svg = null;
         this.circleSize = {
             min: 10,
-            max: 80
+            max: 50
         };
         this.circleRadiusScale = null;
         this.node = null;
@@ -179,19 +179,19 @@ class BubbleChart {
         this.circleRadiusScale = d3.scaleSqrt()
             .domain(frequencyExtent)
             .range([this.circleSize.min, this.circleSize.max]);
-        
+
         document.getElementById("combine").checked = false;
         document.getElementById("sentiments").checked = false;
         document.getElementById("frequency").checked = false;
 
         if (!firstTime) {
             this.forceSimulation.stop();
-          }
+        }
 
         this.toggleSentimentKey(sentiments, true);
         this.createCircles(data);
         this.createForces(sentimentExtent, frequencyExtent);
-        this.createForceSimulation();
+        this.createForceSimulation(data);
         this.addGroupingListeners();
     }
 
@@ -286,6 +286,7 @@ class BubbleChart {
             .append("g");
 
         var circle = this.node.append("circle")
+            .attr('class', 'bubble')
             .attr("r", (d) => {
                 return this.circleRadiusScale(d.frequency);
             })
@@ -298,16 +299,16 @@ class BubbleChart {
 
         var text = this.node.append("text")
             .text(function (d) {
-                if (d.frequency * 2.6 < 6) {
+                if (d.frequency * 2 < 8) {
                     return "";
                 }
-                return d.phrase;
+                return d.keyword;
             })
             .attr("y", 0)
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
             .attr("font-size", function (d) {
-                return d.frequency * 2.6;
+                return Math.min(d.frequency * 2, 13);
             })
             .attr("fill", "black");
 
@@ -316,7 +317,7 @@ class BubbleChart {
         function updateWordInfo(word) {
             var info = "";
             if (word) {
-                info = `${word.phrase} <br> Frequency: ${formatFrequency(word.frequency)} <br> Sentiment: ${word.sentiment}`;
+                info = `${word.keyword} <br> Frequency: ${formatFrequency(word.frequency)} <br> Sentiment: ${word.sentiment}`;
             }
             d3.select("#word-info").html(info);
         }
@@ -325,9 +326,9 @@ class BubbleChart {
     updateCircles() {
         this.node
             .attr("fill", function (d) {
-                if (d["sentiment"] > 0.1) {
+                if (d["sentiment"] > 0.2) {
                     return colorCodes["P"];
-                } else if (d["sentiment"] < -0.1) {
+                } else if (d["sentiment"] < 0) {
                     return colorCodes["N"];
                 } else {
                     return colorCodes["U"];
@@ -418,7 +419,7 @@ class BubbleChart {
     }
 
 
-    createForceSimulation() {
+    createForceSimulation(data) {
         this.forceSimulation = d3.forceSimulation()
             .force("x", this.forces.combine.x)
             .force("y", this.forces.combine.y)
@@ -533,19 +534,22 @@ class BubbleChart {
     }
 }
 
-//default rating
-let data = words.filter(function (d) {
-    return (d.rating == "1");
-});
+// default rating
+// let data = words.filter(function (d) {
+//     return true
+// });
+
+// console.log(data);
+
+// bubbleChart = new BubbleChart();
+// bubbleChart.createSVG();
+// bubbleChart.update(data, true);
+
 
 $('.star').addClass('selected');
 for (var i = 0; i < 5 - 1; i++) {
-  $('.star').eq(i).removeClass('selected');
+    $('.star').eq(i).removeClass('selected');
 }
-
-let bubbleChart = new BubbleChart();
-bubbleChart.createSVG();
-bubbleChart.update(data, true);
 
 //function to update rating
 $('.star').on('click', function () {
@@ -558,7 +562,6 @@ $('.star').on('click', function () {
         return (d.rating == 1);
     });
     bubbleChart.update(data, false);
-
 });
 
 function isChecked(elementID) {
@@ -625,10 +628,10 @@ function addGroupingListeners() {
         }
 
         function createAxes() {
-             var numberOfTicksX = (sentimentExtent[1] - sentimentExtent[0])*10,
-                 numberOfTicksY = frequencyExtent[1]-frequencyExtent[0],
-                 tickFormatY = ".0s";
-                 tickFormatX = ".1f";
+            var numberOfTicksX = (sentimentExtent[1] - sentimentExtent[0]) * 10,
+                numberOfTicksY = frequencyExtent[1] - frequencyExtent[0],
+                tickFormatY = ".0s";
+            tickFormatX = ".1f";
 
             var xAxis = d3.axisBottom(frequencyScaleX)
                 .ticks(numberOfTicksX, tickFormatX);

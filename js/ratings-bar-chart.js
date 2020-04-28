@@ -80,37 +80,36 @@ class RatingsBarChart {
             .style("text-anchor", "middle")
             .text("Number of ratings");
 
-        let self = this;
-        this.bars = this.svg.selectAll("bar")
+        this.bars = this.svg.selectAll(".bar")
             .data(this.currentData)
             .enter()
             .append("g")
             .attr('class', 'bar')
             .attr('transform', d => `translate(${this.x(d.stars)}, ${0})`)
             .attr("height", this.height)
-            .on('click', function (d) {
-                if (self.selectedBar) {
-                    self.selectedBar.classed('selected', false).remove();
+            .on('click', (d, i, nodes) => {
+                d = this.currentData[i];
+                if (this.selectedBar) {
+                    this.selectedBar.classed('selected', false).remove();
                 }
 
                 let padding = 4;
                 var data = [
-                    [-padding, self.height],
-                    [-padding, self.y(d.num) - padding],
-                    [barWidth + padding, self.y(d.num) - padding],
-                    [barWidth + padding, self.height]
+                    [-padding, this.height],
+                    [-padding, this.y(d.num) - padding],
+                    [barWidth + padding, this.y(d.num) - padding],
+                    [barWidth + padding, this.height]
                 ];
+
                 var lineGenerator = d3.line();
                 var pathString = lineGenerator(data);
-                self.selectedBar = d3.select(this).classed('selected', true)
+                this.selectedBar = d3.select(nodes[i]).classed('selected', true)
                     .append('path')
                     .attr('d', pathString)
                     .attr('fill', 'none')
-                    .attr("opacity", (d) => {
-                        return self.opacity(d.num)
-                    })
-                self.onBarSelected(d.stars);
-            });;
+                    .attr("opacity", this.opacity(d.num));
+                this.onBarSelected(d.stars);
+            });
 
         let barWidth = this.x.bandwidth();
         this.bars.append('rect')
@@ -174,7 +173,13 @@ class RatingsBarChart {
     }
 
     update() {
-        this.y.domain([0, this.yMax]);
+        if (this.selectedBar) {
+            this.selectedBar.classed('selected', false).remove();
+        }
+
+        this.y = this.y.domain([0, this.yMax]);
+        this.opacity = this.opacity.domain([0, this.yMax]);
+
         this.bars.select("rect")
             .data(this.currentData)
             .transition()

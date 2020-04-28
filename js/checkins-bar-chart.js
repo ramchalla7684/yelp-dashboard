@@ -1,9 +1,9 @@
 class CheckinsBarChart {
     constructor() {
         this.margin = {
-            top: 10,
+            top: 30,
             right: 30,
-            bottom: 90,
+            bottom: 30,
             left: 60
         };
         this.width = 800 - this.margin.left - this.margin.right;
@@ -147,7 +147,9 @@ class CheckinsBarChart {
     }
 
     update() {
-        this.y.domain([0, this.yMax]);
+        this.y = this.y.domain([0, this.yMax]);
+        this.opacity = this.opacity.domain([0, this.yMax]);
+
         this.svg.selectAll("rect")
             .data(this.currentData)
             .transition()
