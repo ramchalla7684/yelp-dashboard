@@ -109,31 +109,39 @@
                     </ul> -->
 
                 <div class="viz-group-1">
-                    <div class="line-chart" id="line-chart">
+                    <div class="viz-ratings">
+                        <div class="line-chart" id="line-chart">
+
+                        </div>
+                        <div class="ratings-bar-chart" id="ratings-bar-chart">
+
+                        </div>
+                    </div>
+
+                    <div class="viz-sentiment">
+                        <div class="rating">
+                            <span class="star" name="1">&#9733;</span>
+                            <span class="star" name="2">&#9733;</span>
+                            <span class="star" name="3">&#9733;</span>
+                            <span class="star" name="4">&#9733;</span>
+                            <span class="star" name="5">&#9733;</span>
+                        </div>
+
+                        <div id="controls">
+                            <span>
+                                <label><input id="combine" type="radio" name="grouping" value="combine">Combine</label>
+                                <label><input id="sentiments" type="radio" name="grouping"
+                                        value="sentiments">Cluster</label>
+                                <label><input id="frequency" type="radio" name="grouping" value="frequency"
+                                        checked>Frequency vs
+                                    Sentiment Score</label>
+                            </span>
+                        </div>
+                        <div id="word-info"></div>
+                        <div id="bubble-chart"></div>
 
                     </div>
                 </div>
-
-                <!-- <h1>Sentiment Bubble Chart</h1>
-                <p>Select a rating</p>
-                <div class="rating">
-                    <span class="star" name="1">&#9733;</span>
-                    <span class="star" name="2">&#9733;</span>
-                    <span class="star" name="3">&#9733;</span>
-                    <span class="star" name="4">&#9733;</span>
-                    <span class="star" name="5">&#9733;</span>
-                </div>
-
-                <div id="controls">
-                    <span>
-                        <label><input id="combine" type="radio" name="grouping" value="combine" checked>Combine</label>
-                        <label><input id="sentiments" type="radio" name="grouping" value="sentiments">Cluster</label>
-                        <label><input id="frequency" type="radio" name="grouping" value="frequency">Frequency vs
-                            Sentiment Score</label>
-                    </span>
-                </div>
-                <div id="word-info"></div>
-                <div id="bubble-chart"></div> -->
 
 
                 <div class="viz-group-2">
@@ -148,8 +156,9 @@
     <script src="./js/data-store.js"></script>
     <script src="./js/leaflet.js"></script>
     <script src="./js/line-chart.js"></script>
-    <!-- <script src="./js/bubble-chart.js"></script> -->
-    <script src="./js/bar-chart.js"></script>
+    <script src="./js/ratings-bar-chart.js"></script>
+    <script src="./js/bubble-chart.js"></script>
+    <script src="./js/checkins-bar-chart.js"></script>
     <script src="./js/dashboard.js"></script>
     <script src="./js/main.js"></script>
 </body>

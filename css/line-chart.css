@@ -15,7 +15,7 @@
 
 .line {
     fill: none;
-    stroke: steelblue;
+    stroke: #BB1332;
     stroke-width: 1.5px;
 }
 
@@ -43,6 +43,14 @@
 }
 
 .dot {
-    fill: #4682B4;
     stroke: #fff;
+    fill: #BB1332;
+}
+
+.dot.selected {
+    fill: #420D35;
+}
+
+.dot:hover {
+    cursor: pointer;
 }

@@ -1,7 +1,8 @@
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 let lineChart,
-    barChart;
+    checkinsBarChart,
+    ratingsBarChart;
 
 function showBusinessName(business) {
     businessNameEl.textContent = business.name;
@@ -22,7 +23,9 @@ function showDataPicker1(business) {
             li.classList.add('active');
 
             showLineChart(business, year);
-            showBarChart(business, year);
+            showBubbleChart(business, year);
+            showCheckinsBarChart(business, year);
+            showRatingsBarChart(business, year);
         });
 
         datePickerEl.appendChild(li);
@@ -48,11 +51,11 @@ function showLineChart(business, year) {
         };
     }
     let ratings = [];
-    for (let i = 0; i < 12; i++) {
+    for (let month = 0; month < 12; month++) {
 
-        if (!(i in business.ratings[year])) {
+        if (!business.ratings[year][month]) {
             ratings.push({
-                month: MONTHS[i],
+                month: MONTHS[month],
                 stars: 0,
                 num: 0
             });
@@ -60,10 +63,10 @@ function showLineChart(business, year) {
             let {
                 avg,
                 num
-            } = avgStars(business.ratings[year][i].stars);
+            } = avgStars(business.ratings[year][month].stars);
 
             ratings.push({
-                month: MONTHS[i],
+                month: MONTHS[month],
                 stars: avg,
                 num: num
             });
@@ -82,36 +85,85 @@ function showLineChart(business, year) {
     }
 }
 
-function showBarChart(business, year) {
+function showBubbleChart(business, year) {
 
-    if (!(year in business.checkins)) {
+}
+
+function showCheckinsBarChart(business, year) {
+
+    if (!business.checkins[year]) {
         return;
     }
 
     let checkins = [];
 
-    for (let i = 0; i < 12; i++) {
+    for (let month = 0; month < 12; month++) {
 
-        if (!(i in business.checkins[year])) {
+        if (!business.checkins[year][month]) {
             checkins.push({
-                month: MONTHS[i],
+                month: MONTHS[month],
                 checkins: 0
             });
         } else {
             checkins.push({
-                month: MONTHS[i],
-                checkins: business.checkins[year][i]
+                month: MONTHS[month],
+                checkins: business.checkins[year][month]
             });
         }
     }
 
-    if (!barChart) {
-        barChart = new BarChart();
-        barChart.createSVG();
-        barChart.currentData = checkins;
-        barChart.init();
+    if (!checkinsBarChart) {
+        checkinsBarChart = new CheckinsBarChart();
+        checkinsBarChart.createSVG();
+        checkinsBarChart.currentData = checkins;
+        checkinsBarChart.init();
     } else {
-        barChart.currentData = checkins;
-        barChart.update();
+        checkinsBarChart.currentData = checkins;
+        checkinsBarChart.update();
+    }
+}
+
+function showRatingsBarChart(business, year) {
+    let _ratings = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0
+    };
+    for (let month = 0; month < 12; month++) {
+        if (!business.ratings[year][month]) {
+            continue;
+        }
+
+        for (let star = 1; star <= 5; star++) {
+
+            // if (!_ratings[star]) {
+            //     _ratings[star] = 0;
+            // }
+
+            if (!business.ratings[year][month].stars[star]) {
+                continue;
+            }
+            _ratings[star] += business.ratings[year][month].stars[star];
+        }
+    }
+
+    let ratings = [];
+    for (let star = 1; star <= 5; star++) {
+        ratings.push({
+            stars: star,
+            num: _ratings[star]
+        });
+    }
+
+    if (!ratingsBarChart) {
+        ratingsBarChart = new RatingsBarChart();
+        ratingsBarChart.createSVG();
+        ratingsBarChart.currentData = ratings;
+        ratingsBarChart.init();
+    } else {
+        ratingsBarChart.currentData = ratings;
+        ratingsBarChart.update();
     }
 }

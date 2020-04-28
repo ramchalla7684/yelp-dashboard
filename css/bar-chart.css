@@ -7,3 +7,13 @@
     padding: 5px;
     text-align: center;
 }
+
+
+.bar:hover {
+    cursor: pointer;
+}
+
+.selected path {
+    stroke: #420D35;
+    stroke-width: 2;
+}

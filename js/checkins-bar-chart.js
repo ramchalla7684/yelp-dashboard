@@ -1,4 +1,4 @@
-class BarChart {
+class CheckinsBarChart {
     constructor() {
         this.margin = {
             top: 10,
@@ -24,7 +24,7 @@ class BarChart {
 
     set currentData(data) {
         this.data = data;
-        this.yMax = Math.max(...this.data.map(d => d.checkins)) + 50;
+        this.yMax = Math.max(...this.data.map(d => d.checkins)) + 30;
     }
 
     get currentData() {
@@ -75,7 +75,7 @@ class BarChart {
             .attr("x", 0 - (this.height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
-            .text("Check ins");
+            .text("Checkins");
 
         // Bars
         let bars = this.svg.selectAll("bar")
@@ -147,6 +147,23 @@ class BarChart {
     }
 
     update() {
+        this.y.domain([0, this.yMax]);
+        this.svg.selectAll("rect")
+            .data(this.currentData)
+            .transition()
+            .duration(800)
+            .attr("y", (d) => {
+                return this.y(d.checkins);
+            })
+            .attr("height", (d) => {
+                return this.height - this.y(d.checkins);
+            })
+            .attr("opacity", (d) => {
+                return this.opacity(d.checkins)
+            })
+            .delay(function (d, i) {
+                return (i * 80)
+            })
 
     }
 }
@@ -250,25 +267,3 @@ var d2 = [{
         "checkins": 212
     }
 ];
-
-
-function update(data, y) {
-
-    svg.selectAll("rect")
-        .data(data)
-        .transition()
-        .duration(800)
-        .attr("y", function (d) {
-            return y(d.checkins);
-        })
-        .attr("height", function (d) {
-            return height - y(d.checkins);
-        })
-        .attr("opacity", function (d) {
-            return opacity(d.checkins)
-        })
-        .delay(function (d, i) {
-            return (i * 80)
-        })
-
-}

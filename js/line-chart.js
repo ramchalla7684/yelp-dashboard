@@ -2,13 +2,13 @@ class LineChart {
     constructor() {
         this.margin = {
             top: 30,
-            right: 120,
+            right: 30,
             bottom: 30,
-            left: 50
+            left: 30
         };
 
-        this.width = 860 - this.margin.left - this.margin.right;
-        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.width = 560 - this.margin.left - this.margin.right;
+        this.height = 350 - this.margin.top - this.margin.bottom;
         this.tooltip = {
             width: 100,
             height: 100,
@@ -34,6 +34,8 @@ class LineChart {
         this.data = null;
 
         this.focus = null;
+
+        this.selectedDot = null;
     }
 
     set currentData(data) {
@@ -96,14 +98,15 @@ class LineChart {
 
         let transitionPath = d3
             .transition()
-            .ease(d3.easeSin)
-            .delay(0)
-            .duration(1500);
+            .ease(d3.easeLinear)
+            .delay(90)
+            .duration(1000);
         path
             .attr("stroke-dashoffset", pathLength)
             .attr("stroke-dasharray", pathLength)
             .transition(transitionPath).on("end", () => {
 
+                let self = this;
                 this.svg.selectAll(".dot")
                     .data(this.currentData)
                     .enter().append("circle") // Uses the enter().append() method
@@ -116,7 +119,14 @@ class LineChart {
                         console.log(this.y(d.stars));
                         return this.y(d.stars)
                     })
-                    .attr("r", 5);
+                    .attr("r", 8)
+                    .on('click', function (d) {
+                        if (self.selectedDot) {
+                            self.selectedDot.attr('r', 6).classed('selected', false);
+                        }
+                        self.selectedDot = d3.select(this).attr('r', 12).classed('selected', true);
+                        self.onDotSelected(d.month);
+                    });
             })
             .attr("stroke-dashoffset", 0);
 
@@ -212,6 +222,10 @@ class LineChart {
                     .attr("r", 5);
             })
             .attr("stroke-dashoffset", 0);
+
+    }
+
+    onDotSelected(month) {
 
     }
 
