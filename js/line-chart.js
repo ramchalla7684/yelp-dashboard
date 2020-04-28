@@ -1,48 +1,229 @@
-var margin = {
-        top: 30,
-        right: 120,
-        bottom: 30,
-        left: 50
-    },
-    width = 560 - margin.left - margin.right,
-    height = 200 - margin.top - margin.bottom,
-    tooltip = {
-        width: 100,
-        height: 100,
-        x: 10,
-        y: -30
-    };
+class LineChart {
+    constructor() {
+        this.margin = {
+            top: 30,
+            right: 120,
+            bottom: 30,
+            left: 50
+        };
 
-var parseDate = d3.timeParse("%m/%e/%Y"),
-    bisectDate = d3.bisector(function (d) {
-        return d.date;
-    }).left,
-    formatValue = d3.format(","),
-    dateFormatter = d3.timeFormat("%m/%d/%y");
+        this.width = 860 - this.margin.left - this.margin.right;
+        this.height = 400 - this.margin.top - this.margin.bottom;
+        this.tooltip = {
+            width: 100,
+            height: 100,
+            x: 10,
+            y: -30
+        };
 
-var x = d3.scaleTime()
-    .range([0, width]);
+        this.parseDate = d3.timeParse("%m/%e/%Y");
+        this.bisectDate = d3.bisector(function (d) {
+            return d.date;
+        }).left;
 
-var y = d3.scaleLinear()
-    .range([height, 0]);
+        this.formatValue = d3.format(",");
+        this.dateFormatter = d3.timeFormat("%m/%d/%y");
+
+        this.x = null;
+        this.y = null;
+
+        this.line = null;
+
+        this.svg = null;
+
+        this.data = null;
+
+        this.focus = null;
+    }
+
+    set currentData(data) {
+        this.data = data;
+    }
+
+    get currentData() {
+        return this.data;
+    }
+
+    createSVG() {
+        this.svg = d3.select("#line-chart").append("svg")
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+    }
+
+    init() {
+
+        this.x = d3.scaleTime()
+            .range([0, this.width]);
+        this.y = d3.scaleLinear()
+            .range([this.height, 0]);
 
 
+        this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
+        this.y = this.y.domain([1, 5]);
 
-var line = d3.line()
-    .x(function (d) {
-        return x(d.date);
-    })
-    .y(function (d) {
-        return y(d.likes);
-    });
+        this.line = d3.line()
+            .x((d) => {
+                console.log(this.x(d.date));
+                return this.x(d.date);
+            })
+            .y((d) => {
+                return this.y(d.stars);
+            });
 
-var svg = d3.select("#line-chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        this.svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(d3.axisBottom(this.x));
 
 
+        this.svg.append("g")
+            .attr("class", "y-axis")
+            .call(d3.axisLeft(this.y));
+
+
+        let path = this.svg.append("path")
+            .datum(this.currentData)
+            .attr("class", "line")
+            .attr("d", this.line);
+
+        let pathLength = path.node().getTotalLength();
+
+        let transitionPath = d3
+            .transition()
+            .ease(d3.easeSin)
+            .delay(0)
+            .duration(1500);
+        path
+            .attr("stroke-dashoffset", pathLength)
+            .attr("stroke-dasharray", pathLength)
+            .transition(transitionPath).on("end", () => {
+
+                this.svg.selectAll(".dot")
+                    .data(this.currentData)
+                    .enter().append("circle") // Uses the enter().append() method
+                    .attr("class", "dot")
+                    .attr("cx", (d, i) => {
+                        // console.log(this.x(d.date));
+                        return this.x(d.date)
+                    })
+                    .attr("cy", (d) => {
+                        console.log(this.y(d.stars));
+                        return this.y(d.stars)
+                    })
+                    .attr("r", 5);
+            })
+            .attr("stroke-dashoffset", 0);
+
+        this.focus = this.svg.append("g")
+            .attr("class", "focus")
+            .style("display", "none");
+
+        this.focus.append("rect")
+            .attr("class", "tooltip")
+            .attr("width", 100)
+            .attr("height", 50)
+            .attr("x", 10)
+            .attr("y", -22)
+            .attr("rx", 4)
+            .attr("ry", 4);
+
+        this.focus.append("text")
+            .attr("class", "tooltip-date")
+            .attr("x", 18)
+            .attr("y", -2);
+
+        this.focus.append("text")
+            .attr("x", 18)
+            .attr("y", 18)
+            .text("Stars:");
+
+        this.focus.append("text")
+            .attr("class", "tooltip-stars")
+            .attr("x", 60)
+            .attr("y", 18);
+
+        let mousemove = this.mousemove;
+        let self = this;
+        this.svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", this.width)
+            .attr("height", this.height)
+            .on("mouseover", () => {
+                this.focus.style("display", null);
+            })
+            .on("mouseout", () => {
+                this.focus.style("display", "none");
+            })
+            .on("mousemove", function () {
+                mousemove(this, self);
+            });
+
+    }
+
+    update() {
+        this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
+        this.y = this.y.domain([1, 5]);
+        this.svg.select(".x-axis").remove();
+
+        this.svg.select(".y-axis").remove();
+        this.svg.selectAll(".dot").remove();
+
+        this.svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", "translate(0," + this.height + ")")
+            .call(d3.axisBottom(this.x));
+
+
+        this.svg.append("g")
+            .attr("class", "y-axis")
+            .call(d3.axisLeft(this.y));
+
+
+        var path = this.svg.select("path")
+            .datum(this.currentData)
+            .attr("class", "line")
+            .attr("d", this.line);
+
+        const pathLength = path.node().getTotalLength();
+        const transitionPath = d3
+            .transition()
+            .ease(d3.easeSin)
+            .duration(2500);
+        path
+            .attr("stroke-dashoffset", pathLength)
+            .attr("stroke-dasharray", pathLength)
+            .transition(transitionPath).on("end", () => {
+                this.svg.selectAll(".dot")
+                    .data(this.currentData)
+                    .enter().append("circle") // Uses the enter().append() method
+                    .attr("class", "dot")
+                    .attr("cx", (d, i) => {
+                        return this.x(d.date)
+                    })
+                    .attr("cy", (d) => {
+                        return this.y(d.stars)
+                    })
+                    .attr("r", 5);
+            })
+            .attr("stroke-dashoffset", 0);
+
+    }
+
+    mousemove(ref, self) {
+        var x0 = self.x.invert(d3.mouse(ref)[0]),
+            i = self.bisectDate(self.currentData, x0, 1),
+            d0 = self.currentData[i - 1],
+            d1 = self.currentData[i],
+            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
+        self.focus.attr("transform", "translate(" + self.x(d.date) + "," + self.y(d.stars) + ")");
+        self.focus.select(".tooltip-date").text(self.dateFormatter(d.date));
+        self.focus.select(".tooltip-stars").text(self.formatValue(d.stars));
+    }
+
+
+}
 
 var all_data = [{
         'name': 'daily',
@@ -156,180 +337,32 @@ var all_data = [{
     }
 ];
 
-currentData = JSON.parse(JSON.stringify(all_data[0].data));
-currentData.forEach(function (d) {
-    d.date = parseDate(d.date);
-    d.likes = +d.likes;
-});
 
-x.domain([currentData[0].date, currentData[currentData.length - 1].date]);
-y.domain([1, 5]);
+// let lineChart = new LineChart();
+// lineChart.createSVG();
 
+// currentData = JSON.parse(JSON.stringify(all_data[0].data));
+// currentData.forEach(function (d) {
+//     d.date = lineChart.parseDate(d.date);
+//     // console.log(d.date);
+//     d.likes = +d.likes;
+// });
 
-svg.append("g")
-    .attr("class", "x-axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
-
-
-svg.append("g")
-    .attr("class", "y-axis")
-    .call(d3.axisLeft(y));
+// lineChart.currentData = currentData;
+// lineChart.init();
 
 
-var path = svg.append("path")
-    .datum(currentData)
-    .attr("class", "line")
-    .attr("d", line);
+// currentData.forEach(function (d) {
+//     // console.log("date: " + d.date)
+//     // console.log("likes: " + d.likes + " : " + typeof d.likes)
+//     d.date = lineChart.parseDate(d.date);
+//     d.likes = +d.likes;
+// });
 
-const pathLength = path.node().getTotalLength();
+// lineChart.currentData = currentData;
+// lineChart.update();
+
 
 
 // D3 provides lots of transition options, have a play around here:
 // https://github.com/d3/d3-transition
-const transitionPath = d3
-    .transition()
-    .ease(d3.easeSin)
-    .duration(2500);
-path
-    .attr("stroke-dashoffset", pathLength)
-    .attr("stroke-dasharray", pathLength)
-
-    .transition(transitionPath).on("end", function () {
-
-        svg.selectAll(".dot")
-            .data(currentData)
-            .enter().append("circle") // Uses the enter().append() method
-            .attr("class", "dot")
-            .attr("cx", function (d, i) {
-                return x(d.date)
-            })
-            .attr("cy", function (d) {
-                return y(d.likes)
-            })
-            .attr("r", 5);
-    })
-    .attr("stroke-dashoffset", 0)
-
-var focus = svg.append("g")
-    .attr("class", "focus")
-    .style("display", "none");
-
-
-
-focus.append("rect")
-    .attr("class", "tooltip")
-    .attr("width", 100)
-    .attr("height", 50)
-    .attr("x", 10)
-    .attr("y", -22)
-    .attr("rx", 4)
-    .attr("ry", 4);
-
-focus.append("text")
-    .attr("class", "tooltip-date")
-    .attr("x", 18)
-    .attr("y", -2);
-
-focus.append("text")
-    .attr("x", 18)
-    .attr("y", 18)
-    .text("Likes:");
-
-focus.append("text")
-    .attr("class", "tooltip-likes")
-    .attr("x", 60)
-    .attr("y", 18);
-
-svg.append("rect")
-    .attr("class", "overlay")
-    .attr("width", width)
-    .attr("height", height)
-    .on("mouseover", function () {
-        focus.style("display", null);
-    })
-    .on("mouseout", function () {
-        focus.style("display", "none");
-    })
-    .on("mousemove", mousemove);
-
-function mousemove() {
-    var x0 = x.invert(d3.mouse(this)[0]),
-        i = bisectDate(currentData, x0, 1),
-        d0 = currentData[i - 1],
-        d1 = currentData[i],
-        d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-    focus.attr("transform", "translate(" + x(d.date) + "," + y(d.likes) + ")");
-    focus.select(".tooltip-date").text(dateFormatter(d.date));
-    focus.select(".tooltip-likes").text(formatValue(d.likes));
-}
-
-function updateChart(data) {
-    console.log("currentData: " + JSON.stringify(data))
-    data = JSON.parse(JSON.stringify(data));
-    data.forEach(function (d) {
-        console.log("date: " + d.date)
-        console.log("likes: " + d.likes + " : " + typeof d.likes)
-        d.date = parseDate(d.date);
-        d.likes = +d.likes;
-    });
-
-    currentData = data;
-    x = x.domain([currentData[0].date, currentData[currentData.length - 1].date]);
-    y = y.domain([1, 5]);
-    svg.select(".x-axis").remove();
-
-
-    svg.select(".y-axis").remove();
-    svg.selectAll(".dot").remove();
-
-    svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-
-
-    svg.append("g")
-        .attr("class", "y-axis")
-        .call(d3.axisLeft(y));
-
-
-    var path = svg.select("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
-
-    const pathLength = path.node().getTotalLength();
-
-    const transitionPath = d3
-        .transition()
-        .ease(d3.easeSin)
-        .duration(2500);
-    path
-        .attr("stroke-dashoffset", pathLength)
-        .attr("stroke-dasharray", pathLength)
-        .transition(transitionPath).on("end", function () {
-
-            svg.selectAll(".dot")
-                .data(currentData)
-                .enter().append("circle") // Uses the enter().append() method
-                .attr("class", "dot")
-                .attr("cx", function (d, i) {
-                    return x(d.date)
-                })
-                .attr("cy", function (d) {
-                    return y(d.likes)
-                })
-                .attr("r", 5);
-        })
-        .attr("stroke-dashoffset", 0);
-
-}
-
-async function getRatings(value) {
-    alert("Hiii: " + value)
-    let ratingsData = await DataStore.getRatings(value);
-    console.log(ratingsData);
-    updateChart(ratingsData[0].data);
-    //  reloadDashboard(ratingsData);
-}

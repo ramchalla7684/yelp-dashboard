@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/line-chart.css">
     <link rel="stylesheet" href="./css/bubble-chart.css">
+    <link rel="stylesheet" href="./css/bar-chart.css">
     <!-- ... -->
 
     <title>Dashboard</title>
@@ -93,7 +94,7 @@
                             style="color: gray;"></i><span style="margin: 0 10px;">Location</span></h4>
                 </div>
 
-                <div class="date-picker-1" id="date-picker-1">
+                <div class="date-picker" id="date-picker">
                     <p>Select a year: </p>
                     <!-- <select id="trend-years" onchange="myFunction()">
                     </select> -->
@@ -108,18 +109,12 @@
                     </ul> -->
 
                 <div class="viz-group-1">
-                    <div class="date-picker-2" id="date-picker-2">
-                        <p>Select a quarter: </p>
-                        <ul></ul>
+                    <div class="line-chart" id="line-chart">
+
                     </div>
                 </div>
 
-                <div class="line-chart" id="line-chart">
-
-                </div>
-
-
-                <h1>Sentiment Bubble Chart</h1>
+                <!-- <h1>Sentiment Bubble Chart</h1>
                 <p>Select a rating</p>
                 <div class="rating">
                     <span class="star" name="1">&#9733;</span>
@@ -138,13 +133,13 @@
                     </span>
                 </div>
                 <div id="word-info"></div>
-                <div id="bubble-chart"></div>
+                <div id="bubble-chart"></div> -->
 
 
                 <div class="viz-group-2">
-
+                    <div class="bar-chart" id="bar-chart">
+                    </div>
                 </div>
-
 
             </section>
         </main>
@@ -152,8 +147,9 @@
 
     <script src="./js/data-store.js"></script>
     <script src="./js/leaflet.js"></script>
-    <!-- <script src="./js/line-chart.js"></script> -->
-    <script src="./js/bubble-chart.js"></script>
+    <script src="./js/line-chart.js"></script>
+    <!-- <script src="./js/bubble-chart.js"></script> -->
+    <script src="./js/bar-chart.js"></script>
     <script src="./js/dashboard.js"></script>
     <script src="./js/main.js"></script>
 </body>

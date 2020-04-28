@@ -1,0 +1,9 @@
+.toolTip {
+    position: absolute;
+    display: none;
+
+    background: none repeat scroll 0 0 #fafafa;
+    border: 1px solid #bdbdbd;
+    padding: 5px;
+    text-align: center;
+}

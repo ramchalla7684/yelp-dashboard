@@ -3,15 +3,13 @@ let map,
 let businessCategoriesEl,
     businessNameEl,
     businessAddressEl,
-    datePicker1,
-    datePicker2;
+    datePickerEl;
 
 function onDOMLoaded() {
     businessCategoriesEl = document.querySelector('#business-categories');
     businessNameEl = document.querySelector('#business-name');
     businessAddressEl = document.querySelector('#business-address span');
-    datePicker1 = document.querySelector('#date-picker-1 ul');
-    datePicker2 = document.querySelector('#date-picker-2 ul');
+    datePickerEl = document.querySelector('#date-picker ul');
 
     loadBusinessCategories();
 }
@@ -45,21 +43,21 @@ async function loadBusinessCategories() {
 
 async function loadBusinesses(category) {
     let businesses = await DataStore.getBusinesses(category);
-    console.log(businesses);
+    // console.log(businesses);
     showOnMap(businesses);
 }
 
 
 async function loadBusinessDetails(businessID) {
     let business = await DataStore.getBusinessDetails(businessID);
-    console.log(business);
+    // console.log(business);
 
     reloadDashboard(business);
 }
 
 async function reloadDashboard(business) {
     showBusinessName(business);
-    showDataPicker1(business.available_dates);
+    showDataPicker1(business);
     // showRatingsPlot();
     // showTopicsPlot();
     // showCheckinsPlot();
