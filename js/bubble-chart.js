@@ -163,7 +163,7 @@ class BubbleChart {
             .attr("height", this.height);
     }
 
-    update(data) {
+    update(data, firstTime) {
         d3.selectAll("#bubble-chart svg > *").remove();
         let frequencies = data.map(function (word) {
             return +word.frequency;
@@ -183,6 +183,10 @@ class BubbleChart {
         document.getElementById("combine").checked = false;
         document.getElementById("sentiments").checked = false;
         document.getElementById("frequency").checked = false;
+
+        if (!firstTime) {
+            this.forceSimulation.stop();
+          }
 
         this.toggleSentimentKey(sentiments, true);
         this.createCircles(data);
@@ -541,7 +545,7 @@ for (var i = 0; i < 5 - 1; i++) {
 
 let bubbleChart = new BubbleChart();
 bubbleChart.createSVG();
-bubbleChart.update(data);
+bubbleChart.update(data, true);
 
 //function to update rating
 $('.star').on('click', function () {
@@ -553,7 +557,7 @@ $('.star').on('click', function () {
     data = words.filter(function (d) {
         return (d.rating == 1);
     });
-    bubbleChart.update(data);
+    bubbleChart.update(data, false);
 
 });
 
