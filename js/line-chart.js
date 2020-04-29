@@ -1,5 +1,8 @@
 class LineChart {
-    constructor() {
+    constructor(year) {
+
+        this.year = year;
+
         this.margin = {
             top: 30,
             right: 30,
@@ -16,14 +19,6 @@ class LineChart {
             y: -30
         };
 
-        this.parseDate = d3.timeParse("%m/%e/%Y");
-        this.bisectDate = d3.bisector(function (d) {
-            return d.month;
-        }).left;
-
-        this.formatValue = d3.format(",");
-        this.dateFormatter = d3.timeFormat("%m/%d/%y");
-
         this.x = null;
         this.y = null;
 
@@ -32,8 +27,6 @@ class LineChart {
         this.svg = null;
 
         this.data = null;
-
-        this.focus = null;
 
         this.selectedDot = null;
     }
@@ -105,69 +98,92 @@ class LineChart {
                 let self = this;
                 this.svg.selectAll(".dot")
                     .data(this.currentData)
-                    .enter().append("circle") // Uses the enter().append() method
-                    .attr("class", "dot")
+                    .enter().append("circle")
+                    .attr('class', (d, i) => `dot dot-${i}`)
                     .attr("cx", (d, i) => {
-                        // console.log(this.x(d.month));
                         return this.x(d.month)
                     })
                     .attr("cy", (d) => {
-                        console.log(this.y(d.stars));
                         return this.y(d.stars)
                     })
-                    .attr("r", 8)
+                    .attr("r", 4)
                     .on('click', function (d) {
                         if (self.selectedDot) {
-                            self.selectedDot.attr('r', 6).classed('selected', false);
+                            self.selectedDot.attr('r', 4).classed('selected', false);
                         }
-                        self.selectedDot = d3.select(this).attr('r', 12).classed('selected', true);
+                        self.selectedDot = d3.select(this).attr('r', 8).classed('selected', true);
                         self.onDotSelected(d.month);
                     });
             })
             .attr("stroke-dashoffset", 0);
 
-        this.focus = this.svg.append("g")
-            .attr("class", "focus")
-            .style("display", "none");
-
-        this.focus.append("rect")
-            .attr("class", "tooltip")
-            .attr("width", 100)
-            .attr("height", 50)
-            .attr("x", 10)
-            .attr("y", -22)
-            .attr("rx", 4)
-            .attr("ry", 4);
-
-        this.focus.append("text")
-            .attr("class", "tooltip-date")
-            .attr("x", 18)
-            .attr("y", -2);
-
-        this.focus.append("text")
-            .attr("x", 18)
-            .attr("y", 18)
-            .text("Stars:");
-
-        this.focus.append("text")
-            .attr("class", "tooltip-stars")
-            .attr("x", 60)
-            .attr("y", 18);
-
-        let mousemove = this.mousemove;
         let self = this;
+        let findClosestRange = (x, range) => {
+            for (let i = 0; i < range.length; i++) {
+                if (Math.abs(x - range[i]) < 30) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         this.svg.append("rect")
             .attr("class", "overlay")
             .attr("width", this.width)
             .attr("height", this.height)
             .on("mouseover", () => {
-                this.focus.style("display", null);
+                this.svg.select('.highlight-path').remove();
             })
             .on("mouseout", () => {
-                this.focus.style("display", "none");
+                this.svg.select('.highlight-path').remove();
             })
-            .on("mousemove", function () {
-                mousemove(this, self);
+            .on("mousemove", (d, i, nodes) => {
+
+                this.svg.select('.highlight-path').remove();
+
+                let mouseX = d3.mouse(nodes[i])[0];
+                let idx = findClosestRange(mouseX, this.x.range());
+                if (idx == -1) {
+                    return;
+                }
+
+                let x = this.x(this.currentData[idx].month);
+                let y = this.y(this.currentData[idx].stars);
+                // console.log(x, y);
+
+                var data = [
+                    [0, y],
+                    [x, y],
+                    [x, this.height]
+                ];
+                var lineGenerator = d3.line();
+                var pathString = lineGenerator(data);
+                this.svg
+                    .append('path')
+                    .attr('class', 'highlight-path')
+                    .attr('d', pathString)
+                    .attr('fill', 'none');
+            })
+            .on('click', (d, i, nodes) => {
+                // console.log("CLICKED");
+
+                let mouseX = d3.mouse(nodes[i])[0];
+                let idx = findClosestRange(mouseX, this.x.range());
+                if (idx == -1) {
+                    return;
+                }
+
+                let x = this.x(this.currentData[idx].month);
+                let y = this.y(this.currentData[idx].stars);
+                // console.log(x, y);
+
+                if (this.selectedDot) {
+                    this.selectedDot.attr('r', 4).classed('selected', false);
+                }
+
+                // console.log(this.svg.select(`circle.dot-${idx}`));
+                this.selectedDot = this.svg.select(`circle.dot-${idx}`).attr('r', 8).classed('selected', true);
+                this.onDotSelected(this.currentData[idx].month);
             });
 
     }
@@ -178,17 +194,16 @@ class LineChart {
         this.svg.select(".line-chart-x-axis").remove();
         this.svg.select(".line-chart-y-axis").remove();
         this.svg.selectAll(".dot").remove();
+        this.selectedDot = null;
 
         this.svg.append("g")
             .attr("class", "line-chart-x-axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(this.x));
 
-
         this.svg.append("g")
             .attr("class", "line-chart-y-axis")
             .call(d3.axisLeft(this.y));
-
 
         var path = this.svg.select("path")
             .datum(this.currentData)
@@ -198,42 +213,38 @@ class LineChart {
         const pathLength = path.node().getTotalLength();
         const transitionPath = d3
             .transition()
-            .ease(d3.easeSin)
-            .duration(2500);
+            .ease(d3.easeLinear)
+            .delay(90)
+            .duration(1000);
         path
             .attr("stroke-dashoffset", pathLength)
             .attr("stroke-dasharray", pathLength)
             .transition(transitionPath).on("end", () => {
+                let self = this;
                 this.svg.selectAll(".dot")
                     .data(this.currentData)
-                    .enter().append("circle") // Uses the enter().append() method
-                    .attr("class", "dot")
+                    .enter().append("circle")
+                    .attr("class", (d, i) => `dot dot-${i}`)
                     .attr("cx", (d, i) => {
                         return this.x(d.month)
                     })
                     .attr("cy", (d) => {
                         return this.y(d.stars)
                     })
-                    .attr("r", 6);
+                    .attr("r", 4)
+                    .on('click', function (d) {
+                        if (self.selectedDot) {
+                            self.selectedDot.attr('r', 4).classed('selected', false);
+                        }
+                        self.selectedDot = d3.select(this).attr('r', 8).classed('selected', true);
+                        self.onDotSelected(d.month);
+                    });
             })
             .attr("stroke-dashoffset", 0);
 
     }
 
     onDotSelected(month) {
-
+        showRatingsBarChart(this.year, month);
     }
-
-    mousemove(ref, self) {
-        var x0 = self.x.invert(d3.mouse(ref)[0]),
-            i = self.bisectDate(self.currentData, x0, 1),
-            d0 = self.currentData[i - 1],
-            d1 = self.currentData[i],
-            d = x0 - d0.date > d1.date - x0 ? d1 : d0;
-        self.focus.attr("transform", "translate(" + self.x(d.month) + "," + self.y(d.stars) + ")");
-        self.focus.select(".tooltip-date").text(self.dateFormatter(d.month));
-        self.focus.select(".tooltip-stars").text(self.formatValue(d.stars));
-    }
-
-
 }

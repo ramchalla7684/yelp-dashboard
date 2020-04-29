@@ -1,16 +1,22 @@
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+let business = null;
+
 let lineChart,
     checkinsBarChart,
     ratingsBarChart,
     bubbleChart;
 
-function showBusinessName(business) {
+function setBusiness(_business) {
+    business = _business;
+}
+
+function showBusinessName() {
     businessNameEl.textContent = business.name;
     businessAddressEl.textContent = business.address;
 }
 
-function showDataPicker1(business) {
+function showDataPicker1() {
     datePickerEl.innerHTML = '';
 
     for (let year in business.available_dates) {
@@ -23,10 +29,10 @@ function showDataPicker1(business) {
             }
             li.classList.add('active');
 
-            showLineChart(business, year);
-            showBubbleChart(business, year);
-            showCheckinsBarChart(business, year);
-            showRatingsBarChart(business, year);
+            showLineChart(year);
+            showBubbleChart(year);
+            showCheckinsBarChart(year);
+            showRatingsBarChart(year);
         });
 
         datePickerEl.appendChild(li);
@@ -36,7 +42,7 @@ function showDataPicker1(business) {
 }
 
 
-function showLineChart(business, year) {
+function showLineChart(year) {
 
     let avgStars = (stars) => {
         let sum = 0,
@@ -76,7 +82,7 @@ function showLineChart(business, year) {
     // console.log(ratings);
 
     if (!lineChart) {
-        lineChart = new LineChart();
+        lineChart = new LineChart(year);
         lineChart.createSVG();
         lineChart.currentData = ratings;
         lineChart.init();
@@ -86,7 +92,66 @@ function showLineChart(business, year) {
     }
 }
 
-function showBubbleChart(business, year) {
+function showRatingsBarChart(year, month = null) {
+    let _ratings = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0
+    };
+
+    if (month == null) {
+        for (let month = 0; month < 12; month++) {
+            if (!business.ratings[year][month]) {
+                continue;
+            }
+
+            for (let star = 1; star <= 5; star++) {
+                if (!business.ratings[year][month].stars[star]) {
+                    continue;
+                }
+                _ratings[star] += business.ratings[year][month].stars[star];
+            }
+        }
+    } else {
+        let monthIdx = MONTHS.indexOf(month);
+        if (monthIdx === -1) {
+            return;
+        }
+        if (!business.ratings[year][monthIdx]) {
+            return;
+        }
+
+        for (let star = 1; star <= 5; star++) {
+            if (!business.ratings[year][monthIdx].stars[star]) {
+                continue;
+            }
+            _ratings[star] += business.ratings[year][monthIdx].stars[star];
+        }
+    }
+
+
+    let ratings = [];
+    for (let star = 1; star <= 5; star++) {
+        ratings.push({
+            stars: star,
+            num: _ratings[star]
+        });
+    }
+
+    if (!ratingsBarChart) {
+        ratingsBarChart = new RatingsBarChart();
+        ratingsBarChart.createSVG();
+        ratingsBarChart.currentData = ratings;
+        ratingsBarChart.init();
+    } else {
+        ratingsBarChart.currentData = ratings;
+        ratingsBarChart.update();
+    }
+}
+
+function showBubbleChart(year) {
 
     console.log(business.keywords);
     let _keywords = {};
@@ -143,11 +208,14 @@ function showBubbleChart(business, year) {
     console.log(sentimentScores.length);
 
     let frequencyThreshold = 1;
-    sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['n_mentions'] > frequencyThreshold);
+    // sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['n_mentions'] > frequencyThreshold);
+    // 2.5 < 8
 
-    // sentimentScores = sentimentScores.splice(0, 30);
+    sentimentScores = sentimentScores.sort((a, b) => b['frequency'] - a['frequency']);
+    sentimentScores = sentimentScores.splice(0, 30);
+    sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['frequency'] * 2.5 >= 8);
+
     console.log(sentimentScores);
-
 
     if (!bubbleChart) {
         bubbleChart = new BubbleChart();
@@ -158,7 +226,7 @@ function showBubbleChart(business, year) {
     }
 }
 
-function showCheckinsBarChart(business, year) {
+function showCheckinsBarChart(year) {
 
     if (!business.checkins[year]) {
         return;
@@ -189,50 +257,5 @@ function showCheckinsBarChart(business, year) {
     } else {
         checkinsBarChart.currentData = checkins;
         checkinsBarChart.update();
-    }
-}
-
-function showRatingsBarChart(business, year) {
-    let _ratings = {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0
-    };
-    for (let month = 0; month < 12; month++) {
-        if (!business.ratings[year][month]) {
-            continue;
-        }
-
-        for (let star = 1; star <= 5; star++) {
-
-            // if (!_ratings[star]) {
-            //     _ratings[star] = 0;
-            // }
-
-            if (!business.ratings[year][month].stars[star]) {
-                continue;
-            }
-            _ratings[star] += business.ratings[year][month].stars[star];
-        }
-    }
-
-    let ratings = [];
-    for (let star = 1; star <= 5; star++) {
-        ratings.push({
-            stars: star,
-            num: _ratings[star]
-        });
-    }
-
-    if (!ratingsBarChart) {
-        ratingsBarChart = new RatingsBarChart();
-        ratingsBarChart.createSVG();
-        ratingsBarChart.currentData = ratings;
-        ratingsBarChart.init();
-    } else {
-        ratingsBarChart.currentData = ratings;
-        ratingsBarChart.update();
     }
 }

@@ -12,6 +12,7 @@ class CheckinsBarChart {
         this.tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
         this.svg = null;
+        this.bars = null;
 
         this.x = null;
         this.y = null;
@@ -78,7 +79,7 @@ class CheckinsBarChart {
             .text("Checkins");
 
         // Bars
-        let bars = this.svg.selectAll("bar")
+        this.bars = this.svg.selectAll("bar")
             .data(this.currentData)
             .enter()
             .append("g")
@@ -86,7 +87,7 @@ class CheckinsBarChart {
             .attr("height", this.height);
 
         let barWidth = this.x.bandwidth();
-        bars.append('rect')
+        this.bars.append('rect')
             .attr('x', 0)
             .attr('y', this.height)
             .attr("width", barWidth)
@@ -122,7 +123,7 @@ class CheckinsBarChart {
                     .attr('width', barWidth);
             });
 
-        bars.append('text')
+        this.bars.append('text')
             .attr('x', barWidth / 2)
             .attr('y', d => this.y(d.checkins) + 10)
             .attr("dy", "1em")
@@ -165,7 +166,19 @@ class CheckinsBarChart {
             })
             .delay(function (d, i) {
                 return (i * 80)
-            })
+            });
+
+
+        let barWidth = this.x.bandwidth();
+        this.bars.select('text')
+            .data(this.currentData)
+            .attr('x', barWidth / 2)
+            .attr('y', d => this.y(d.checkins) + 10)
+            .attr("dy", "1em")
+            .attr('font-size', '0.8em')
+            .attr("text-anchor", "middle")
+            .attr('fill', 'white')
+            .text(d => d.checkins);
 
     }
 }

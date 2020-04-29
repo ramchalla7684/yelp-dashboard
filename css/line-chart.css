@@ -54,3 +54,9 @@
 .dot:hover {
     cursor: pointer;
 }
+
+path.highlight-path {
+    stroke: rgba(66, 13, 53, 0.342);
+    stroke-width: 1;
+    stroke-dasharray: 3;
+}

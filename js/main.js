@@ -56,8 +56,9 @@ async function loadBusinessDetails(businessID) {
 }
 
 async function reloadDashboard(business) {
-    showBusinessName(business);
-    showDataPicker1(business);
+    setBusiness(business);
+    showBusinessName();
+    showDataPicker1();
     // showRatingsPlot();
     // showTopicsPlot();
     // showCheckinsPlot();

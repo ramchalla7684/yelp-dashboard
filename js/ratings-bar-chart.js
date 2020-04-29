@@ -147,16 +147,6 @@ class RatingsBarChart {
                     .attr('x', 0)
                     .attr('width', barWidth);
             });
-
-        this.bars.append('text')
-            .attr('x', barWidth / 2)
-            .attr('y', d => this.y(d.num) + 10)
-            .attr("dy", "1em")
-            .attr('font-size', '0.8em')
-            .attr("text-anchor", "middle")
-            .attr('fill', 'white')
-            .text(d => d.num);
-
         // Animation
         this.svg.selectAll("rect")
             .transition()
@@ -169,6 +159,16 @@ class RatingsBarChart {
             })
             .delay(function (d, i) {
                 return (i * 80)
+            }).on('end', () => {
+                this.bars.append('text')
+                    // .enter(this.currentData)
+                    .attr('x', barWidth / 2)
+                    .attr('y', d => this.y(d.num) - 20)
+                    .attr("dy", "1em")
+                    .attr('font-size', '0.8em')
+                    .attr("text-anchor", "middle")
+                    .attr('fill', 'black')
+                    .text(d => d.num);
             });
     }
 
@@ -180,6 +180,9 @@ class RatingsBarChart {
         this.y = this.y.domain([0, this.yMax]);
         this.opacity = this.opacity.domain([0, this.yMax]);
 
+        this.bars.select('text').remove();
+
+        let barWidth = this.x.bandwidth();
         this.bars.select("rect")
             .data(this.currentData)
             .transition()
@@ -195,18 +198,27 @@ class RatingsBarChart {
             })
             .delay(function (d, i) {
                 return (i * 80)
+            })
+            .on('end', () => {
+                this.bars.append('text')
+                    .enter(this.currentData)
+                    .attr('x', barWidth / 2)
+                    .attr('y', d => this.y(d.num) - 20)
+                    .attr("dy", "1em")
+                    .attr('font-size', '0.8em')
+                    .attr("text-anchor", "middle")
+                    .attr('fill', 'black')
+                    .text(d => d.num);
             });
-
-        let barWidth = this.x.bandwidth();
-        this.bars.select('text')
-            .data(this.currentData)
-            .attr('x', barWidth / 2)
-            .attr('y', d => this.y(d.num) + 10)
-            .attr("dy", "1em")
-            .attr('font-size', '0.8em')
-            .attr("text-anchor", "middle")
-            .attr('fill', 'white')
-            .text(d => d.num);
+        // this.bars.select('text')
+        //     .data(this.currentData)
+        //     .attr('x', barWidth / 2)
+        //     .attr('y', d => this.y(d.num) - 10)
+        //     .attr("dy", "1em")
+        //     .attr('font-size', '0.8em')
+        //     .attr("text-anchor", "middle")
+        //     .attr('fill', 'white')
+        //     .text(d => d.num);
     }
 
     onBarSelected(stars) {

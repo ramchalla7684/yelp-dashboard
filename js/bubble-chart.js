@@ -71,6 +71,8 @@ class BubbleChart {
         this.createForces(sentimentExtent, frequencyExtent);
         this.createForceSimulation(data);
         this.addGroupingListeners();
+
+        document.getElementById("frequency").click();
     }
 
     toggleSentimentKey(sentiments, showSentimentKey) {
@@ -376,13 +378,13 @@ class BubbleChart {
             };
 
 
-            if (d3.select(".x-axis").empty()) {
+            if (this.svg.select(".x-axis").empty()) {
                 createAxes();
             }
-            var xAxis = d3.select(".x-axis"),
-                yAxis = d3.select(".y-axis");
-            var xLabel = d3.select(".x-label"),
-                yLabel = d3.select(".y-label");
+            var xAxis = this.svg.select(".x-axis"),
+                yAxis = this.svg.select(".y-axis");
+            var xLabel = this.svg.select(".x-label"),
+                yLabel = this.svg.select(".y-label");
 
             if (showAxes) {
                 translateAxis(xAxis, "translate(0," + (this.height - onScreenYOffset) + ")");
