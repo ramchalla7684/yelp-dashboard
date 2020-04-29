@@ -7,8 +7,8 @@ class RatingsBarChart {
         this.margin = {
             top: 30,
             right: 30,
-            bottom: 30,
-            left: 50
+            bottom: 60,
+            left: 60
         };
         this.width = 460 - this.margin.left - this.margin.right;
         this.height = 300 - this.margin.top - this.margin.bottom;
@@ -69,18 +69,27 @@ class RatingsBarChart {
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(this.x));
 
-
         this.svg.append("g")
             .attr("class", "yaxis")
             .call(d3.axisLeft(this.y));
 
         this.svg.append("text")
+            .attr('class', 'text-axis-title')
             .attr("transform", "rotate(-90)")
-            .attr("y", 0 - this.margin.left)
+            .attr("y", 0 - 55)
             .attr("x", 0 - (this.height / 2))
             .attr("dy", "1em")
             .style("text-anchor", "middle")
-            .text("Number of ratings");
+            .text("No. of ratings");
+
+        this.svg.append("text")
+            .attr('class', 'text-axis-title')
+            .attr("y", this.height + 30)
+            .attr("x", this.width / 2)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Stars");
+
 
         this.bars = this.svg.selectAll(".bar")
             .data(this.currentData)

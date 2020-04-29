@@ -6,8 +6,8 @@ class LineChart {
         this.margin = {
             top: 30,
             right: 30,
-            bottom: 30,
-            left: 30
+            bottom: 60,
+            left: 60
         };
 
         this.width = 500 - this.margin.left - this.margin.right;
@@ -68,14 +68,31 @@ class LineChart {
             });
 
         this.svg.append("g")
-            .attr("class", "line-chart-x-axis")
+            .attr("class", "x-axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(this.x));
 
 
         this.svg.append("g")
-            .attr("class", "line-chart-y-axis")
+            .attr("class", "y-axis")
             .call(d3.axisLeft(this.y));
+
+        this.svg.append("text")
+            .attr('class', 'text-axis-title')
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - 55)
+            .attr("x", 0 - (this.height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Stars");
+
+        this.svg.append("text")
+            .attr('class', 'text-axis-title')
+            .attr("y", this.height + 30)
+            .attr("x", this.width / 2)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Month");
 
 
         let path = this.svg.append("path")
@@ -110,6 +127,10 @@ class LineChart {
                     .on('click', function (d) {
                         if (self.selectedDot) {
                             self.selectedDot.attr('r', 4).classed('selected', false);
+                        }
+
+                        if (d.stars == 0) {
+                            return;
                         }
                         self.selectedDot = d3.select(this).attr('r', 8).classed('selected', true);
                         self.onDotSelected(d.month);
@@ -181,6 +202,10 @@ class LineChart {
                     this.selectedDot.attr('r', 4).classed('selected', false);
                 }
 
+                if (this.currentData[idx].stars == 0) {
+                    return;
+                }
+
                 // console.log(this.svg.select(`circle.dot-${idx}`));
                 this.selectedDot = this.svg.select(`circle.dot-${idx}`).attr('r', 8).classed('selected', true);
                 this.onDotSelected(this.currentData[idx].month);
@@ -191,18 +216,18 @@ class LineChart {
     update() {
         // this.x = this.x.domain([this.currentData[0].date, this.currentData[this.currentData.length - 1].date]);
         // this.y = this.y.domain([1, 5]);
-        this.svg.select(".line-chart-x-axis").remove();
-        this.svg.select(".line-chart-y-axis").remove();
+        this.svg.select(".x-axis").remove();
+        this.svg.select(".y-axis").remove();
         this.svg.selectAll(".dot").remove();
         this.selectedDot = null;
 
         this.svg.append("g")
-            .attr("class", "line-chart-x-axis")
+            .attr("class", "x-axis")
             .attr("transform", "translate(0," + this.height + ")")
             .call(d3.axisBottom(this.x));
 
         this.svg.append("g")
-            .attr("class", "line-chart-y-axis")
+            .attr("class", "y-axis")
             .call(d3.axisLeft(this.y));
 
         var path = this.svg.select("path")
@@ -235,6 +260,10 @@ class LineChart {
                     .on('click', function (d) {
                         if (self.selectedDot) {
                             self.selectedDot.attr('r', 4).classed('selected', false);
+                        }
+
+                        if (d.stars == 0) {
+                            return;
                         }
                         self.selectedDot = d3.select(this).attr('r', 8).classed('selected', true);
                         self.onDotSelected(d.month);

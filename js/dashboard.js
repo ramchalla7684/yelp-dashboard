@@ -188,6 +188,9 @@ function showBubbleChart(year, month = null, stars = null) {
             }
         }
     } else if (month !== null && stars === null) {
+        if (!business.keywords[year][month]) {
+            return;
+        }
         for (let keyword in business.keywords[year][month].keywords) {
             if (!_keywords[keyword]) {
                 _keywords[keyword] = [];

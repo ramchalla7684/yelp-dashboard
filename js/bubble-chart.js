@@ -357,21 +357,24 @@ class BubbleChart {
                 var xAxis = d3.axisBottom(this.frequencyScaleX)
                     .ticks(numberOfTicks, tickFormatX);
 
-                this.svg.append("g")
-                    .attr("class", "x-axis")
-                    .attr("transform", "translate(0," + (this.height + offScreenYOffset) + ")")
-                    .call(xAxis)
+                // this.svg.append("g")
+                //     .attr("class", "x-axis")
+                //     .attr("transform", "translate(0," + (this.height + offScreenYOffset) + ")")
+                //     .call(xAxis);
+
                 this.svg.append("text")
                     .attr("class", "x-label")
                     .attr("text-anchor", "end")
+                    .attr('x', this.width)
                     .text("Sentiment Score");
 
                 var yAxis = d3.axisLeft(this.frequencyScaleY)
                     .ticks(numberOfTicks, tickFormatY);
-                this.svg.append("g")
-                    .attr("class", "y-axis")
-                    .attr("transform", "translate(" + offScreenXOffset + ",0)")
-                    .call(yAxis);
+
+                // this.svg.append("g")
+                //     .attr("class", "y-axis")
+                //     .attr("transform", "translate(" + offScreenXOffset + ",0)")
+                //     .call(yAxis);
 
                 this.svg.append("text")
                     .attr("class", "y-label")

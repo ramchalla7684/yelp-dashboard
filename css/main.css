@@ -155,7 +155,16 @@ section.viz .business-id .business-name {
     margin-right: 20px;
 }
 
-
 .bubble-chart {
     position: relative;
+}
+
+svg text {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 200;
+}
+
+svg text.text-axis-title {
+    font-size: 0.9em;
+    font-weight: 100;
 }
