@@ -9,8 +9,6 @@ class CheckinsBarChart {
         this.width = 800 - this.margin.left - this.margin.right;
         this.height = 450 - this.margin.top - this.margin.bottom;
 
-        this.tooltip = d3.select("body").append("div").attr("class", "toolTip");
-
         this.svg = null;
         this.bars = null;
 
@@ -79,10 +77,11 @@ class CheckinsBarChart {
             .text("Checkins");
 
         // Bars
-        this.bars = this.svg.selectAll("bar")
+        this.bars = this.svg.selectAll(".bar")
             .data(this.currentData)
             .enter()
             .append("g")
+            .attr('class', 'bar')
             .attr('transform', d => `translate(${this.x(d.month)}, ${0})`)
             .attr("height", this.height);
 
@@ -107,11 +106,6 @@ class CheckinsBarChart {
                     .delay(0)
                     .attr('x', -del / 2)
                     .attr('width', barWidth + del);
-                // this.tooltip
-                //     .style("left", d3.event.pageX + "px")
-                //     .style("top", d3.event.pageY - 30 + "px")
-                //     .style("display", "inline-block")
-                //     .html((d.checkins));
             })
             .on("mouseout", function () {
                 d3.select(this)
@@ -122,15 +116,6 @@ class CheckinsBarChart {
                     .attr('x', 0)
                     .attr('width', barWidth);
             });
-
-        this.bars.append('text')
-            .attr('x', barWidth / 2)
-            .attr('y', d => this.y(d.checkins) + 10)
-            .attr("dy", "1em")
-            .attr('font-size', '0.8em')
-            .attr("text-anchor", "middle")
-            .attr('fill', 'white')
-            .text(d => d.checkins);
 
         // Animation
         this.svg.selectAll("rect")
@@ -144,6 +129,17 @@ class CheckinsBarChart {
             })
             .delay(function (d, i) {
                 return (i * 80)
+            })
+            .on('end', () => {
+                this.bars.append('text')
+                    .attr('class', 'bar-text')
+                    .attr('x', barWidth / 2)
+                    .attr('y', (d, i, nodes) => this.y(this.currentData[i].checkins) - 20)
+                    .attr("dy", "1em")
+                    .attr('font-size', '0.8em')
+                    .attr("text-anchor", "middle")
+                    .attr('fill', 'black')
+                    .text((d, i, nodes) => this.currentData[i].checkins);
             });
     }
 
@@ -151,6 +147,13 @@ class CheckinsBarChart {
         this.y = this.y.domain([0, this.yMax]);
         this.opacity = this.opacity.domain([0, this.yMax]);
 
+        this.svg.selectAll('.bar-text').remove();
+
+        this.svg.select(".yaxis")
+            .call(d3.axisLeft(this.y));
+
+
+        let barWidth = this.x.bandwidth();
         this.svg.selectAll("rect")
             .data(this.currentData)
             .transition()
@@ -166,19 +169,17 @@ class CheckinsBarChart {
             })
             .delay(function (d, i) {
                 return (i * 80)
+            })
+            .on('end', () => {
+                this.bars.append('text')
+                    .attr('class', 'bar-text')
+                    .attr('x', barWidth / 2)
+                    .attr('y', (d, i, nodes) => this.y(this.currentData[i].checkins) - 20)
+                    .attr("dy", "1em")
+                    .attr('font-size', '0.8em')
+                    .attr("text-anchor", "middle")
+                    .attr('fill', 'black')
+                    .text((d, i, nodes) => this.currentData[i].checkins);
             });
-
-
-        let barWidth = this.x.bandwidth();
-        this.bars.select('text')
-            .data(this.currentData)
-            .attr('x', barWidth / 2)
-            .attr('y', d => this.y(d.checkins) + 10)
-            .attr("dy", "1em")
-            .attr('font-size', '0.8em')
-            .attr("text-anchor", "middle")
-            .attr('fill', 'white')
-            .text(d => d.checkins);
-
     }
 }

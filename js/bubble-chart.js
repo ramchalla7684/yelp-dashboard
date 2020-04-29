@@ -178,8 +178,8 @@ class BubbleChart {
             });
 
         var text = this.node.append("text")
-            .text(function (d) {
-                if (d.frequency * 2.5 < 8) {
+            .text((d) => {
+                if (this.circleRadiusScale(d.frequency) / 0.9 < 8) {
                     return "";
                 }
                 return d.keyword;
@@ -187,8 +187,11 @@ class BubbleChart {
             .attr("y", 0)
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
-            .attr("font-size", function (d) {
-                return Math.min(d.frequency * 2.5, 13);
+            .attr("font-size", (d) => {
+                // if (d.frequency * 2.5 < 8) {
+                //     return Math.max(this.circleRadiusScale(d.frequency), 8);
+                // }
+                return Math.min(this.circleRadiusScale(d.frequency) / 0.9, 13);
             })
             .attr("fill", "black");
 

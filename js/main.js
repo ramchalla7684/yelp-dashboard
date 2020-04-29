@@ -52,11 +52,11 @@ async function loadBusinessDetails(businessID) {
     let business = await DataStore.getBusinessDetails(businessID);
     // console.log(business);
 
-    reloadDashboard(business);
+    setBusiness(business);
+    reloadDashboard();
 }
 
-async function reloadDashboard(business) {
-    setBusiness(business);
+async function reloadDashboard() {
     showBusinessName();
     showDataPicker1();
     // showRatingsPlot();

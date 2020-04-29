@@ -245,6 +245,7 @@ class LineChart {
     }
 
     onDotSelected(month) {
-        showRatingsBarChart(this.year, month);
+        showRatingsBarChart(this.year, MONTHS.indexOf(month));
+        showBubbleChart(this.year, MONTHS.indexOf(month));
     }
 }

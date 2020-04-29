@@ -1,5 +1,9 @@
 class RatingsBarChart {
-    constructor() {
+    constructor(year, month) {
+
+        this.year = year;
+        this.month = month;
+
         this.margin = {
             top: 30,
             right: 30,
@@ -8,8 +12,6 @@ class RatingsBarChart {
         };
         this.width = 460 - this.margin.left - this.margin.right;
         this.height = 300 - this.margin.top - this.margin.bottom;
-
-        this.tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
         this.svg = null;
         this.bars = null;
@@ -132,11 +134,6 @@ class RatingsBarChart {
                     .delay(0)
                     .attr('x', -del / 2)
                     .attr('width', barWidth + del);
-                // this.tooltip
-                //     .style("left", d3.event.pageX + "px")
-                //     .style("top", d3.event.pageY - 30 + "px")
-                //     .style("display", "inline-block")
-                //     .html((d.num));
             })
             .on("mouseout", function () {
                 d3.select(this)
@@ -161,14 +158,14 @@ class RatingsBarChart {
                 return (i * 80)
             }).on('end', () => {
                 this.bars.append('text')
-                    // .enter(this.currentData)
+                    .attr('class', 'bar-text')
                     .attr('x', barWidth / 2)
-                    .attr('y', d => this.y(d.num) - 20)
+                    .attr('y', (d, i, nodes) => this.y(this.currentData[i].num) - 20)
                     .attr("dy", "1em")
                     .attr('font-size', '0.8em')
                     .attr("text-anchor", "middle")
                     .attr('fill', 'black')
-                    .text(d => d.num);
+                    .text((d, i, nodes) => this.currentData[i].num);
             });
     }
 
@@ -180,7 +177,11 @@ class RatingsBarChart {
         this.y = this.y.domain([0, this.yMax]);
         this.opacity = this.opacity.domain([0, this.yMax]);
 
-        this.bars.select('text').remove();
+        this.svg.selectAll('.bar-text').remove();
+
+
+        this.svg.select(".yaxis")
+            .call(d3.axisLeft(this.y));
 
         let barWidth = this.x.bandwidth();
         this.bars.select("rect")
@@ -201,27 +202,18 @@ class RatingsBarChart {
             })
             .on('end', () => {
                 this.bars.append('text')
-                    .enter(this.currentData)
+                    .attr('class', 'bar-text')
                     .attr('x', barWidth / 2)
-                    .attr('y', d => this.y(d.num) - 20)
+                    .attr('y', (d, i, nodes) => this.y(this.currentData[i].num) - 20)
                     .attr("dy", "1em")
                     .attr('font-size', '0.8em')
                     .attr("text-anchor", "middle")
                     .attr('fill', 'black')
-                    .text(d => d.num);
+                    .text((d, i, nodes) => this.currentData[i].num);
             });
-        // this.bars.select('text')
-        //     .data(this.currentData)
-        //     .attr('x', barWidth / 2)
-        //     .attr('y', d => this.y(d.num) - 10)
-        //     .attr("dy", "1em")
-        //     .attr('font-size', '0.8em')
-        //     .attr("text-anchor", "middle")
-        //     .attr('fill', 'white')
-        //     .text(d => d.num);
     }
 
     onBarSelected(stars) {
-        console.log(stars);
+        showBubbleChart(this.year, this.month, stars);
     }
 }

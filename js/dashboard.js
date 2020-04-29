@@ -88,6 +88,7 @@ function showLineChart(year) {
         lineChart.init();
     } else {
         lineChart.currentData = ratings;
+        lineChart.year = year;
         lineChart.update();
     }
 }
@@ -115,19 +116,18 @@ function showRatingsBarChart(year, month = null) {
             }
         }
     } else {
-        let monthIdx = MONTHS.indexOf(month);
-        if (monthIdx === -1) {
+        if (month === -1) {
             return;
         }
-        if (!business.ratings[year][monthIdx]) {
+        if (!business.ratings[year][month]) {
             return;
         }
 
         for (let star = 1; star <= 5; star++) {
-            if (!business.ratings[year][monthIdx].stars[star]) {
+            if (!business.ratings[year][month].stars[star]) {
                 continue;
             }
-            _ratings[star] += business.ratings[year][monthIdx].stars[star];
+            _ratings[star] += business.ratings[year][month].stars[star];
         }
     }
 
@@ -141,30 +141,22 @@ function showRatingsBarChart(year, month = null) {
     }
 
     if (!ratingsBarChart) {
-        ratingsBarChart = new RatingsBarChart();
+        ratingsBarChart = new RatingsBarChart(year, month);
         ratingsBarChart.createSVG();
         ratingsBarChart.currentData = ratings;
         ratingsBarChart.init();
     } else {
         ratingsBarChart.currentData = ratings;
+        ratingsBarChart.year = year;
+        ratingsBarChart.month = month;
         ratingsBarChart.update();
     }
 }
 
-function showBubbleChart(year) {
+function showBubbleChart(year, month = null, stars = null) {
 
-    console.log(business.keywords);
     let _keywords = {};
-    for (let month in business.keywords[year]) {
-        for (let keyword in business.keywords[year][month].keywords) {
-            if (!_keywords[keyword]) {
-                _keywords[keyword] = [];
-            }
-
-            _keywords[keyword] = _keywords[keyword].concat(business.keywords[year][month].keywords[keyword]);
-        }
-    }
-
+    let sentimentScores = [];
     let countSentiment = (sentiments) => {
         let p = 0,
             n = 0,
@@ -185,8 +177,48 @@ function showBubbleChart(year) {
             'nNeutral': u
         };
     }
+    if (month === null && stars === null) {
+        for (let month in business.keywords[year]) {
+            for (let keyword in business.keywords[year][month].keywords) {
+                if (!_keywords[keyword]) {
+                    _keywords[keyword] = [];
+                }
 
-    let sentimentScores = [];
+                _keywords[keyword] = _keywords[keyword].concat(business.keywords[year][month].keywords[keyword]);
+            }
+        }
+    } else if (month !== null && stars === null) {
+        for (let keyword in business.keywords[year][month].keywords) {
+            if (!_keywords[keyword]) {
+                _keywords[keyword] = [];
+            }
+
+            _keywords[keyword] = _keywords[keyword].concat(business.keywords[year][month].keywords[keyword]);
+        }
+    } else if (month !== null && stars > 0) {
+        if (!business.keywords[year][month].stars[stars]) {
+            return;
+        }
+        for (let keyword in business.keywords[year][month].stars[stars]) {
+            if (!_keywords[keyword]) {
+                _keywords[keyword] = [];
+            }
+            _keywords[keyword] = _keywords[keyword].concat(business.keywords[year][month].stars[stars][keyword]);
+        }
+    } else if (month === null && stars > 0) {
+        for (let month in business.keywords[year]) {
+            for (let keyword in business.keywords[year][month].stars[stars]) {
+                if (!_keywords[keyword]) {
+                    _keywords[keyword] = [];
+                }
+                _keywords[keyword] = _keywords[keyword].concat(business.keywords[year][month].stars[stars][keyword]);
+            }
+        }
+    } else {
+        return;
+    }
+
+
     for (let keyword in _keywords) {
         let {
             nPositive,
@@ -205,15 +237,13 @@ function showBubbleChart(year) {
         });
     }
 
-    console.log(sentimentScores.length);
-
     let frequencyThreshold = 1;
     // sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['n_mentions'] > frequencyThreshold);
     // 2.5 < 8
 
     sentimentScores = sentimentScores.sort((a, b) => b['frequency'] - a['frequency']);
     sentimentScores = sentimentScores.splice(0, 30);
-    sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['frequency'] * 2.5 >= 8);
+    // sentimentScores = sentimentScores.filter(sentimentScore => sentimentScore['frequency'] * 2.5 >= 4);
 
     console.log(sentimentScores);
 
