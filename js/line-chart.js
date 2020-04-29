@@ -186,7 +186,6 @@ class LineChart {
                     .attr('fill', 'none');
             })
             .on('click', (d, i, nodes) => {
-                // console.log("CLICKED");
 
                 let mouseX = d3.mouse(nodes[i])[0];
                 let idx = findClosestRange(mouseX, this.x.range());

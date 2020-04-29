@@ -15,10 +15,10 @@ class BubbleChart {
         this.margin = {
             top: 30,
             right: 30,
-            bottom: 30,
-            left: 30
+            bottom: 60,
+            left: 60
         };
-        this.width = 1100 - this.margin.left - this.margin.right;
+        this.width = 1200 - this.margin.left - this.margin.right;
         this.height = 600 - this.margin.top - this.margin.bottom;
         this.svg = null;
         this.circleSize = {
@@ -42,7 +42,7 @@ class BubbleChart {
     }
 
     update(data, firstTime) {
-        d3.selectAll("#bubble-chart svg > *").remove();
+        this.svg.selectAll('*').remove();
         let frequencies = data.map(function (word) {
             return +word.frequency;
         });
@@ -158,7 +158,7 @@ class BubbleChart {
     createCircles(data) {
         var formatFrequency = d3.format(",");
         var nodes = this.svg.append("g")
-            .attr("class", "nodes");
+            .attr("class", "nodes")
 
         this.node = nodes.selectAll("node")
             .data(data)
@@ -354,60 +354,106 @@ class BubbleChart {
                     tickFormatY = ".0s",
                     tickFormatX = ".1f";
 
-                var xAxis = d3.axisBottom(this.frequencyScaleX)
-                    .ticks(numberOfTicks, tickFormatX);
+                // var xAxis = d3.axisBottom(this.frequencyScaleX)
+                //     .ticks(numberOfTicks, tickFormatX);
 
                 // this.svg.append("g")
                 //     .attr("class", "x-axis")
                 //     .attr("transform", "translate(0," + (this.height + offScreenYOffset) + ")")
                 //     .call(xAxis);
 
-                this.svg.append("text")
-                    .attr("class", "x-label")
-                    .attr("text-anchor", "end")
-                    .attr('x', this.width)
-                    .text("Sentiment Score");
 
-                var yAxis = d3.axisLeft(this.frequencyScaleY)
-                    .ticks(numberOfTicks, tickFormatY);
+                this.svg.selectAll('.g-x-axis').remove();
 
-                // this.svg.append("g")
-                //     .attr("class", "y-axis")
-                //     .attr("transform", "translate(" + offScreenXOffset + ",0)")
-                //     .call(yAxis);
+                let xAxis = this.svg.append('g')
+                    .attr('class', 'g-x-axis');
 
-                this.svg.append("text")
-                    .attr("class", "y-label")
-                    .attr("text-anchor", "end")
+                xAxis.append('text')
+                    .attr('text-anchor', 'middle')
+                    .style('alignment-baseline', 'middle')
+                    .attr('class', 'x-label')
+                    .attr('x', this.width / 2)
+                    .attr('y', this.height - 30)
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Sentiment score");
+
+
+                let xAxisLine = xAxis.append('line')
+                    .attr('transform', `translate(${50}, ${this.height-30})`)
+                    .attr('x1', 0)
+                    .attr('y1', 0)
+                    .attr('x2', this.width - 2 * 40)
+                    .attr('y2', 0)
+                    .attr('stroke', '#757575')
+                    .attr('stroke-width', 0.8)
+                    .attr('marker-end', 'url(#arrow-head-r)');
+
+
+                xAxis.append("svg:defs").append("svg:marker")
+                    .attr("id", "arrow-head-r")
+                    .attr("refX", 6)
+                    .attr("refY", 6)
+                    .attr("markerWidth", 30)
+                    .attr("markerHeight", 30)
+                    .append("path")
+                    .attr("d", "M 0 0 12 6 0 12 3 6")
+                    .style("fill", "#757575");
+
+
+
+                this.svg.selectAll('.g-y-axis').remove();
+
+                let yAxis = this.svg.append('g')
+                    .attr('class', 'g-y-axis');
+
+                yAxis.append("text")
+                    .attr('class', 'y-label')
                     .attr("transform", "rotate(-90)")
+                    .attr("y", 0 - 2)
+                    .attr("x", 0 - (this.height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .style('alignment-baseline', 'middle')
                     .text("Frequency");
+
+
+                let yAxisLine = xAxis.append('line')
+                    .attr('transform', `translate(${30}, ${30})`)
+                    .attr('x1', 0)
+                    .attr('y1', 0)
+                    .attr('x2', 0)
+                    .attr('y2', this.height - 2 * 40)
+                    .attr('stroke', '#757575')
+                    .attr('stroke-width', 0.8)
+                    .attr('marker-start', 'url(#arrow-head-u)');
+
+                yAxis.append("svg:defs").append("svg:marker")
+                    .attr("id", "arrow-head-u")
+                    .attr("refX", 6)
+                    .attr("refY", 6)
+                    .attr("markerWidth", 30)
+                    .attr("markerHeight", 30)
+                    .append("path")
+                    // .attr("d", "M 0 0 12 6 0 12 3 6")
+                    .attr("d", "M 0 12 6 0 12 12 6 9")
+                    .style("fill", "#757575");
             };
 
 
             if (this.svg.select(".x-axis").empty()) {
                 createAxes();
             }
-            var xAxis = this.svg.select(".x-axis"),
-                yAxis = this.svg.select(".y-axis");
-            var xLabel = this.svg.select(".x-label"),
-                yLabel = this.svg.select(".y-label");
+            var xAxis = this.svg.select(".g-x-axis"),
+                yAxis = this.svg.select(".g-y-axis");
 
             if (showAxes) {
-                translateAxis(xAxis, "translate(0," + (this.height - onScreenYOffset) + ")");
-                translateAxis(yAxis, "translate(" + onScreenXOffset + ",0)");
-                xLabel
-                    .attr("x", this.width - 570)
-                    .attr("y", this.height - 6)
-                yLabel
-                    .attr("y", this.width - 1180)
-                    .attr("x", this.height - 900)
+
+                xAxis.classed('invisible', false);
+                yAxis.classed('invisible', false);
             } else {
-                translateAxis(xAxis, "translate(0," + (this.height + offScreenYOffset) + ")");
-                translateAxis(yAxis, "translate(" + offScreenXOffset + ",0)");
-                xLabel
-                    .attr("x", this.width + 570)
-                yLabel
-                    .attr("x", this.height + 900)
+                xAxis.classed('invisible', true);
+                yAxis.classed('invisible', true);
             }
 
             function translateAxis(axis, translation) {

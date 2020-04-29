@@ -164,7 +164,13 @@ svg text {
     font-weight: 200;
 }
 
-svg text.text-axis-title {
+svg text.text-axis-title,
+.x-label,
+.y-label {
     font-size: 0.9em;
     font-weight: 100;
+}
+
+g.invisible {
+    display: none;
 }
