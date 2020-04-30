@@ -39,10 +39,55 @@ class BubbleChart {
             .append("svg")
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
+
+        // this.showLegend();
+    }
+
+    showLegend() {
+
+        let legend = [
+            ["#75A1C7", "Positive"],
+            ["#E9E764", "Neutral"],
+            ["#DE6A7F", "Negative"]
+        ];
+
+        let legendIndicatorSize = 18;
+
+        let l = this.svg.append('g')
+            .attr('class', 'legend')
+            .attr('transform', 'translate(80, 40)')
+            .style('backgroud-color', '#eee');
+
+        l.append('rect')
+            .attr('width', 120)
+            .attr('height', 85)
+            .attr('transform', `translate(-20,-10)`)
+            .attr('fill', '#eee');
+
+        l.selectAll('legend-indicator')
+            .data(legend)
+            .enter().append('rect')
+            .attr('x', 0)
+            .attr('y', (d, i) => i * (legendIndicatorSize + 5))
+            .attr('width', legendIndicatorSize)
+            .attr('height', legendIndicatorSize)
+            .style('fill', d => d[0]);
+
+        l.selectAll('legend-label')
+            .data(legend)
+            .enter().append('text')
+            .attr('x', legendIndicatorSize + 8)
+            .attr('y', (d, i) => i * (legendIndicatorSize + 5) + legendIndicatorSize / 2)
+            .attr('text-anchor', 'left')
+            .attr('alignment-baseline', 'middle')
+            .style('font-size', '0.72em')
+            .style('fill', '#37474F')
+            .text(d => d[1]);
     }
 
     update(data, firstTime) {
         this.svg.selectAll('*').remove();
+        this.showLegend();
         let frequencies = data.map(function (word) {
             return +word.frequency;
         });
@@ -200,7 +245,7 @@ class BubbleChart {
         function updateWordInfo(word) {
             var info = "";
             if (word) {
-                info = `${word.keyword} <br> Frequency: ${formatFrequency(word.frequency)} <br> Sentiment: ${word.sentiment}`;
+                info = `<b>${word.keyword}</b> <br> Frequency: ${formatFrequency(word.frequency)} <br> Sentiment: ${word.sentiment}`;
             }
             d3.select("#word-info").html(info);
         }
@@ -448,12 +493,13 @@ class BubbleChart {
                 yAxis = this.svg.select(".g-y-axis");
 
             if (showAxes) {
-
                 xAxis.classed('invisible', false);
                 yAxis.classed('invisible', false);
+                this.svg.select('.legend').classed('invisible', false);
             } else {
                 xAxis.classed('invisible', true);
                 yAxis.classed('invisible', true);
+                this.svg.select('.legend').classed('invisible', true);
             }
 
             function translateAxis(axis, translation) {
