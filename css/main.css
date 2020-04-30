@@ -144,11 +144,16 @@ section.viz .business-id .business-name {
     box-shadow: 0px 0px 4px 0px gray;
 }
 
+.viz-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .viz-ratings {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
 }
 
 .viz-ratings .line-chart {
@@ -199,7 +204,7 @@ img.__unselected {
     }
 }
 
-@media only screen and (max-width: 1370px) {
+@media only screen and (max-width: 1400px) {
     .map {
         height: 300px;
     }

@@ -6,8 +6,8 @@ class CheckinsBarChart {
             bottom: 60,
             left: 60
         };
-        this.width = 800 - this.margin.left - this.margin.right;
-        this.height = 450 - this.margin.top - this.margin.bottom;
+        this.width = 1170 - this.margin.left - this.margin.right;
+        this.height = 500 - this.margin.top - this.margin.bottom;
 
         this.svg = null;
         this.bars = null;

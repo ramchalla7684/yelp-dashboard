@@ -18,11 +18,11 @@ class BubbleChart {
             bottom: 60,
             left: 60
         };
-        this.width = 1200 - this.margin.left - this.margin.right;
-        this.height = 600 - this.margin.top - this.margin.bottom;
+        this.width = 1170 - this.margin.left - this.margin.right;
+        this.height = 500 - this.margin.top - this.margin.bottom;
         this.svg = null;
         this.circleSize = {
-            min: 10,
+            min: 30,
             max: 50
         };
         this.circleRadiusScale = null;
@@ -37,8 +37,8 @@ class BubbleChart {
     createSVG() {
         this.svg = d3.select("#bubble-chart")
             .append("svg")
-            .attr("width", this.width)
-            .attr("height", this.height);
+            .attr("width", this.width + this.margin.left + this.margin.right)
+            .attr("height", this.height + this.margin.top + this.margin.bottom);
     }
 
     update(data, firstTime) {
@@ -236,9 +236,9 @@ class BubbleChart {
             };
 
             function sentimentForceX(d, width) {
-                if (d.sentiment < -0.1) {
+                if (d.sentiment < 0) {
                     return left(width);
-                } else if (d.sentiment > 0.1) {
+                } else if (d.sentiment > 0.2) {
                     return right(width);
                 } else {
                     return center(width);
@@ -246,7 +246,7 @@ class BubbleChart {
             }
 
             function sentimentForceY(d, height) {
-                if ((d.sentiment < -0.1) || (d.sentiment > 0.1)) {
+                if ((d.sentiment < 0) || (d.sentiment > 0.2)) {
                     return top(height);
                 } else {
                     return bottom(height);
@@ -266,11 +266,11 @@ class BubbleChart {
             }
 
             function top(dimension) {
-                return dimension / 4;
+                return dimension / 2;
             }
 
             function bottom(dimension) {
-                return dimension / 4 * 3;
+                return dimension / 2;
             }
         }
 
@@ -373,14 +373,14 @@ class BubbleChart {
                     .style('alignment-baseline', 'middle')
                     .attr('class', 'x-label')
                     .attr('x', this.width / 2)
-                    .attr('y', this.height - 30)
+                    .attr('y', this.height + 60)
                     .attr("dy", "1em")
                     .style("text-anchor", "middle")
                     .text("Sentiment score");
 
 
                 let xAxisLine = xAxis.append('line')
-                    .attr('transform', `translate(${50}, ${this.height-30})`)
+                    .attr('transform', `translate(${80}, ${this.height + 60})`)
                     .attr('x1', 0)
                     .attr('y1', 0)
                     .attr('x2', this.width - 2 * 40)
@@ -419,11 +419,11 @@ class BubbleChart {
 
 
                 let yAxisLine = xAxis.append('line')
-                    .attr('transform', `translate(${30}, ${30})`)
+                    .attr('transform', `translate(${30}, ${60})`)
                     .attr('x1', 0)
                     .attr('y1', 0)
                     .attr('x2', 0)
-                    .attr('y2', this.height - 2 * 40)
+                    .attr('y2', this.height - 2 * 25)
                     .attr('stroke', '#757575')
                     .attr('stroke-width', 0.8)
                     .attr('marker-start', 'url(#arrow-head-u)');
@@ -465,19 +465,6 @@ class BubbleChart {
         };
     }
 }
-
-//function to update rating
-$('.star').on('click', function () {
-    $('.star').addClass('selected');
-    var count = $(this).attr('name');
-    for (var i = 0; i < count - 1; i++) {
-        $('.star').eq(i).removeClass('selected');
-    }
-    data = words.filter(function (d) {
-        return (d.rating == 1);
-    });
-    bubbleChart.update(data, false);
-});
 
 function isChecked(elementID) {
     return d3.select(elementID).property("checked");

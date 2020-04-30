@@ -25,6 +25,7 @@ label span {
 svg {
   box-sizing: border-box;
   border: 1px solid #ddd;
+  border-radius: 18px;
 }
 
 .bubble {

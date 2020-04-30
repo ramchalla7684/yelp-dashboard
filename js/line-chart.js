@@ -10,8 +10,8 @@ class LineChart {
             left: 60
         };
 
-        this.width = 500 - this.margin.left - this.margin.right;
-        this.height = 300 - this.margin.top - this.margin.bottom;
+        this.width = 600 - this.margin.left - this.margin.right;
+        this.height = 330 - this.margin.top - this.margin.bottom;
         this.tooltip = {
             width: 100,
             height: 100,

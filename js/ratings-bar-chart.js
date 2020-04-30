@@ -10,8 +10,8 @@ class RatingsBarChart {
             bottom: 60,
             left: 60
         };
-        this.width = 460 - this.margin.left - this.margin.right;
-        this.height = 300 - this.margin.top - this.margin.bottom;
+        this.width = 550 - this.margin.left - this.margin.right;
+        this.height = 330 - this.margin.top - this.margin.bottom;
 
         this.svg = null;
         this.bars = null;
