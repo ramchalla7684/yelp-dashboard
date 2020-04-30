@@ -1,5 +1,5 @@
-// const BASE_URL = 'http://127.0.0.1:3100';
-const BASE_URL = 'http://18.207.216.71:3100';
+const BASE_URL = 'http://127.0.0.1:3100';
+// const BASE_URL = 'http://18.207.216.71:3100';
 
 const DataStore = (function () {
     return {

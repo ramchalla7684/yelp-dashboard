@@ -32,20 +32,6 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <!-- ... -->
 
-    <style>
-        #mapid {
-            height: 380px;
-        }
-
-        img.__selected {
-            opacity: 1;
-        }
-
-        img.__unselected {
-            opacity: 0.5;
-        }
-    </style>
-
 </head>
 
 <body>
@@ -97,39 +83,31 @@
 
                 <div class="date-picker" id="date-picker">
                     <p>Select a year: </p>
-                    <!-- <select id="trend-years" onchange="myFunction()">
-                    </select> -->
                     <ul>
                     </ul>
                 </div>
-                <!-- <ul class="quarters" id="quarters">
-                        <li>Jan - Mar</li>
-                        <li class="active">Apr - Jun</li>
-                        <li>Jul - Sep</li>
-                        <li>Oct - Dec</li>
-                    </ul> -->
 
                 <div class="viz-group-1">
                     <div class="viz-ratings">
                         <div class="line-chart" id="line-chart">
-
+                            <h4 id="line-chart-title" class="chart-title"></h4>
                         </div>
                         <div class="ratings-bar-chart" id="ratings-bar-chart">
-
+                            <h4 id="ratings-chart-title" class="chart-title"></h4>
                         </div>
                     </div>
 
                     <div class="viz-sentiment">
 
-                        <div id="controls">
-                            <span>
-                                <label><input id="combine" type="radio" name="grouping" value="combine">Combine</label>
-                                <label><input id="sentiments" type="radio" name="grouping"
-                                        value="sentiments">Cluster</label>
-                                <label><input id="frequency" type="radio" name="grouping" value="frequency"
-                                        checked>Frequency vs
-                                    Sentiment Score</label>
-                            </span>
+                        <h4 id="bubble-chart-title" class="chart-title"></h4>
+                        <div id="controls" class="controls">
+                            <label><input id="combine" type="radio" name="grouping"
+                                    value="combine"><span>Combine</span></label>
+                            <label><input id="sentiments" type="radio" name="grouping"
+                                    value="sentiments"><span>Cluster</span></label>
+                            <label><input id="frequency" type="radio" name="grouping" value="frequency"
+                                    checked><span>Frequency vs
+                                    Sentiment Score</span></label>
                         </div>
 
                         <div id="bubble-chart" class="bubble-chart">
@@ -141,6 +119,7 @@
 
                 <div class="viz-group-2">
                     <div class="bar-chart" id="bar-chart">
+                        <h4 id="bar-chart-title" class="chart-title"></h4>
                     </div>
                 </div>
 

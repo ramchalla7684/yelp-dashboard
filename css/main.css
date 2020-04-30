@@ -41,7 +41,7 @@ main {
 }
 
 section.left {
-    width: 30%;
+    width: 28%;
     background-color: #370C35;
     border-radius: 18px;
     padding: 10px;
@@ -173,4 +173,34 @@ svg text.text-axis-title,
 
 g.invisible {
     display: none;
+}
+
+.controls {
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+
+.map {
+    height: 380px;
+}
+
+img.__selected {
+    opacity: 1;
+}
+
+img.__unselected {
+    opacity: 0.5;
+}
+
+@media only screen and (max-height: 1000px) {
+    .map {
+        height: 300px;
+    }
+}
+
+@media only screen and (max-width: 1370px) {
+    .map {
+        height: 300px;
+    }
 }

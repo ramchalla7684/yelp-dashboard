@@ -1,18 +1,18 @@
 #controls {
-  font-size: 18px;
+  font-size: 14px;
   margin-bottom: 10px;
+  margin-top: 20px;
 }
 
 input[type="radio"] {
-  margin-top: -1px;
+  margin-top: -5px;
+  margin-left: 10px;
   vertical-align: middle;
 }
 
-span:nth-child(2) {
-  margin-left: 28px;
+label span {
+  margin-left: 5px;
 }
-
-
 
 #word-info {
   color: #666;

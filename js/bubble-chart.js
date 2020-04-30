@@ -466,11 +466,6 @@ class BubbleChart {
     }
 }
 
-$('.star').addClass('selected');
-for (var i = 0; i < 5 - 1; i++) {
-    $('.star').eq(i).removeClass('selected');
-}
-
 //function to update rating
 $('.star').on('click', function () {
     $('.star').addClass('selected');

@@ -3,13 +3,22 @@ let map,
 let businessCategoriesEl,
     businessNameEl,
     businessAddressEl,
-    datePickerEl;
+    datePickerEl,
+    lineChartTitleEl,
+    ratingsChartTitleEl,
+    bubbleChartTitleEl,
+    barChartTitleEl;
 
 function onDOMLoaded() {
     businessCategoriesEl = document.querySelector('#business-categories');
     businessNameEl = document.querySelector('#business-name');
     businessAddressEl = document.querySelector('#business-address span');
     datePickerEl = document.querySelector('#date-picker ul');
+
+    lineChartTitleEl = document.querySelector("#line-chart-title");
+    ratingsChartTitleEl = document.querySelector("#ratings-chart-title");
+    bubbleChartTitleEl = document.querySelector("#bubble-chart-title");
+    barChartTitleEl = document.querySelector("#bar-chart-title");
 
     loadBusinessCategories();
 }
