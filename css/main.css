@@ -87,7 +87,6 @@ section.left nav li.active,
     color: white;
     font-weight: bolder;
     background-color: #00ACC1;
-
 }
 
 section.left div.map {
@@ -117,7 +116,7 @@ section.viz .business-id .business-name {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 .date-picker p {
@@ -145,9 +144,11 @@ section.viz .business-id .business-name {
 }
 
 .viz-group {
+    margin-left: 25px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: start; */
+    align-items: flex-start;
 }
 
 .viz-ratings {
@@ -208,4 +209,9 @@ img.__unselected {
     .map {
         height: 300px;
     }
+}
+
+.chart-title {
+    font-family: 'Montserrat', sans-serif;
+    margin: 40px 0 5px 0;
 }

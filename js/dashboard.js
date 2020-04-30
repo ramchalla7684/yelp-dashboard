@@ -1,4 +1,5 @@
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const FULL_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 let business = null;
 
@@ -44,6 +45,7 @@ function showDataPicker1() {
 
 function showLineChart(year) {
 
+    lineChartTitleEl.textContent = `Ratings Trend in ${year}`;
     let avgStars = (stars) => {
         let sum = 0,
             num = 0;
@@ -94,6 +96,8 @@ function showLineChart(year) {
 }
 
 function showRatingsBarChart(year, month = null) {
+
+    ratingsChartTitleEl.textContent = `Ratings distribution in ${month !== null ? `${FULL_MONTHS[month]} of ` : ''}${year}`;
     let _ratings = {
         1: 0,
         2: 0,
@@ -154,6 +158,8 @@ function showRatingsBarChart(year, month = null) {
 }
 
 function showBubbleChart(year, month = null, stars = null) {
+
+    bubbleChartTitleEl.textContent = `Trending keywords in ${month !== null ? `${FULL_MONTHS[month]} of ` : ''}${year}${stars !== null ? ` for ${stars} star rating`: ''}`;
 
     let _keywords = {};
     let sentimentScores = [];
@@ -262,8 +268,12 @@ function showBubbleChart(year, month = null, stars = null) {
 function showCheckinsBarChart(year) {
 
     if (!business.checkins[year]) {
+        barChartEl.style.display = "none";
         return;
     }
+
+    barChartEl.style.display = "block";
+    barChartTitleEl.textContent = `Checkins in ${year}`;
 
     let checkins = [];
 

@@ -7,7 +7,8 @@ let businessCategoriesEl,
     lineChartTitleEl,
     ratingsChartTitleEl,
     bubbleChartTitleEl,
-    barChartTitleEl;
+    barChartTitleEl,
+    barChartEl;
 
 function onDOMLoaded() {
     businessCategoriesEl = document.querySelector('#business-categories');
@@ -19,6 +20,8 @@ function onDOMLoaded() {
     ratingsChartTitleEl = document.querySelector("#ratings-chart-title");
     bubbleChartTitleEl = document.querySelector("#bubble-chart-title");
     barChartTitleEl = document.querySelector("#bar-chart-title");
+
+    barChartEl = document.querySelector("#bar-chart");
 
     loadBusinessCategories();
 }
