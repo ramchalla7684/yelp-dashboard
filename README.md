@@ -1,4 +1,4 @@
-## Dashboard for Yelp business insights
+## Dashboard for Yelp Business Data Analytics
 [http://yelpdashboard.s3.amazonaws.com/index.html](http://yelpdashboard.s3.amazonaws.com/index.html)
 
 
