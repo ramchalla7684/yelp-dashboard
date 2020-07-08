@@ -40,7 +40,6 @@ class BubbleChart {
             .attr("width", this.width + this.margin.left + this.margin.right)
             .attr("height", this.height + this.margin.top + this.margin.bottom);
 
-        // this.showLegend();
     }
 
     showLegend() {
@@ -199,7 +198,6 @@ class BubbleChart {
         }
     }
 
-
     createCircles(data) {
         var formatFrequency = d3.format(",");
         var nodes = this.svg.append("g")
@@ -242,6 +240,7 @@ class BubbleChart {
 
         this.updateCircles();
 
+        //Update text for each circle
         function updateWordInfo(word) {
             var info = "";
             if (word) {
@@ -264,6 +263,7 @@ class BubbleChart {
             });
     }
 
+    //Creates forces to plot
     createForces(sentimentExtent, frequencyExtent) {
         var forceStrength = 0.08;
 
@@ -363,6 +363,7 @@ class BubbleChart {
             });
     }
 
+    //Listerners for radio buttons
     addGroupingListeners() {
 
         let updateForces = (forces, forceSimulation) => {
@@ -398,14 +399,6 @@ class BubbleChart {
                 var numberOfTicks = 10,
                     tickFormatY = ".0s",
                     tickFormatX = ".1f";
-
-                // var xAxis = d3.axisBottom(this.frequencyScaleX)
-                //     .ticks(numberOfTicks, tickFormatX);
-
-                // this.svg.append("g")
-                //     .attr("class", "x-axis")
-                //     .attr("transform", "translate(0," + (this.height + offScreenYOffset) + ")")
-                //     .call(xAxis);
 
 
                 this.svg.selectAll('.g-x-axis').remove();
